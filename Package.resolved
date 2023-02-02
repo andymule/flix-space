@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "phykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AdamEisfeld/PhyKit.git",
+      "state" : {
+        "revision" : "43a76569fc740f6b241b238292131538f30beb80",
+        "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "raylib",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/STREGAsGate/Raylib.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "9e7c83604f74211e4f8f3c38c1c52d4434f51bc1"
+      }
+    }
+  ],
+  "version" : 2
+}
