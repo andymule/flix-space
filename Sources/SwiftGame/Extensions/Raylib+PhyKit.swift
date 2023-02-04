@@ -10,6 +10,11 @@ extension PHYVector3 {
   public var vector2: Vector2 {
     Vector2(x: x, y: y)
   }
+
+  // plus equal operator
+  public static func += (lhs: inout PHYVector3, rhs: PHYVector3) {
+    lhs = PHYVector3(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
+  }
 }
 
 extension Vector3 {

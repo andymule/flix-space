@@ -5,7 +5,7 @@
             "request": "launch",
             "name": "Debug SwiftGame",
             "program": "${workspaceFolder:SwiftGame}/.build/debug/SwiftGame",
-            "args": [],
+            "args": ["-Onone"],
             "cwd": "${workspaceFolder:SwiftGame}",
             "preLaunchTask": "swift: Build Debug SwiftGame"
         },

@@ -8,7 +8,7 @@
     "indentConditionalCompilationBlocks" : true,
     "lineBreakBeforeControlFlowKeywords" : false,
     "lineBreakBeforeEachArgument" : false,
-    "lineLength" : 100,
+    "lineLength" : 130,
     "maximumBlankLines" : 1,
 
     "rules" : {

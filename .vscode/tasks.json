@@ -4,8 +4,7 @@
 		{
 			"type": "swift",
 			"args": [
-				"build",
-				"--build-tests"
+				"build"
 			],
 			"cwd": "/Users/arckex/Desktop/SwiftGame",
 			"problemMatcher": [
@@ -13,7 +12,7 @@
 			],
 			"group": "build",
 			"label": "swift: Build All",
-			"detail": "swift build --build-tests"
+			"detail": "swift build"
 		}
 	]
 }
