@@ -25,6 +25,12 @@ class FlixGame {
       fovy: 45.0,
       _projection: 0)  // CAMERA_PERSPECTIVE
 
+    //   Camera2D camera = { 0 };
+    // camera.target = (Vector2){ player.x + 20.0f, player.y + 20.0f };
+    // camera.offset = (Vector2){ screenWidth/2.0f, screenHeight/2.0f };
+    // camera.rotation = 0.0f;
+    // camera.zoom = 0.3f;
+
     physicsWorld.gravity = PHYVector3(x: 0, y: 0, z: 0)  // y = -9.8
 
     for _ in 0..<20 {
@@ -48,7 +54,7 @@ class FlixGame {
       color: .white,
       isStatic: false)
     ship.constrainPlane = true
-    ship.rotation = .euler(270, 0, 0, .degrees)  //RaylibC.QuaternionFromEuler(45, 45, 0)
+    // ship.rotation = .euler(270, 0, 0, .degrees)  //RaylibC.QuaternionFromEuler(45, 45, 0)
     ship.rigidbody.angularVelocity = PHYVector3(x: 0, y: 0, z: 0)
     inputList.append(ship)
     physicsWorld.add(ship.rigidbody)
@@ -58,10 +64,11 @@ class FlixGame {
       inputList.forEach { $0.handleInput() }
 
       // update time
-      let lastFrameTime = Raylib.getFrameTime()
+      let deltaTime = Raylib.getFrameTime()
       let time = Raylib.getTime()
 
-      physicsWorld.internalStepSimulation(TimeInterval(lastFrameTime))
+      physicsWorld.internalStepSimulation(TimeInterval(deltaTime))
+      camera.target = ship.position
 
       Raylib.beginDrawing()
       Raylib.clearBackground(.myDarkGrey)

@@ -8,7 +8,7 @@ import simd
 public struct FlixBox : FlixGFX {
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1)) //Raylib.loadModel("Resources/cube.obj")
   public var boundingBox: BoundingBox
-  public var pos: Vector3 {
+  public var position: Vector3 {
     get {
       rigidbody.position.vector3
     }
@@ -30,7 +30,7 @@ public struct FlixBox : FlixGFX {
   public var wireframe: Bool = false
   public var wireframeColor: Color = .white
 
-  public let collisionShape: PHYCollisionShapeBox
+  public let collisionShape: PHYCollisionShape
   public let rigidbody: PHYRigidBody
   public var forward: Vector3 {
     get {
