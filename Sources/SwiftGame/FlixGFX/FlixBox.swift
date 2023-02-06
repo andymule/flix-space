@@ -2,12 +2,9 @@ import PhyKit
 import Raylib
 import RaylibC
 import simd
-// import SceneKit
-// import SceneKit.ModelIO
 
 public struct FlixBox : FlixGFX {
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1)) //Raylib.loadModel("Resources/cube.obj")
-  public var boundingBox: BoundingBox
   public var position: Vector3 {
     get {
       rigidbody.position.vector3
@@ -16,8 +13,8 @@ public struct FlixBox : FlixGFX {
       rigidbody.position = newValue.phyVector3
     }
   }
-  public var size: Vector3 //= Vector3(x: 1, y: 1, z: 1)
-  public var color: Color //= .darkGray
+  public var size: Vector3 
+  public var color: Color
   public var rotation: PHYQuaternion {
     get {
       rigidbody.orientation
@@ -30,7 +27,6 @@ public struct FlixBox : FlixGFX {
   public var wireframe: Bool = false
   public var wireframeColor: Color = .white
 
-  public let collisionShape: PHYCollisionShape
   public let rigidbody: PHYRigidBody
   public var forward: Vector3 {
     get {
@@ -40,10 +36,10 @@ public struct FlixBox : FlixGFX {
   public init(pos: Vector3, size: Vector3, color: Color, isStatic: Bool) {
     self.size = size
     self.color = color
-    self.collisionShape = PHYCollisionShapeBox(width: size.x, height: size.y, length: size.z)
+    let collisionShape = PHYCollisionShapeBox(width: size.x, height: size.y, length: size.z)
     // var customCollider: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: customGeometry, type: .concave)
     self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic, shape: collisionShape)
-    self.boundingBox = Raylib.getMeshBoundingBox(FlixBox.model.meshes[0])
+    // self.boundingBox = Raylib.getMeshBoundingBox(FlixBox.model.meshes[0])
     rigidbody.restitution = 1.0
     rigidbody.friction = 0.1
     rigidbody.linearDamping = 0.0
