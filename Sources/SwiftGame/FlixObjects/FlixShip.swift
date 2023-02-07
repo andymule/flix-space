@@ -32,7 +32,6 @@ public class FlixShip: FlixObject, FlixInput {
     if constrainPlane {
       rigidbody.position.z = 0
     }
-    print(forward, rigidbody.orientation)
     if lockRotationToZOnly {
       rigidbody.orientation = PHYQuaternion.euler(0, 0, rigidbody.orientation.vector4.toEuler().z * 180 / Float.pi)
       rigidbody.angularVelocity = PHYVector3(0, 0, rigidbody.angularVelocity.z)
