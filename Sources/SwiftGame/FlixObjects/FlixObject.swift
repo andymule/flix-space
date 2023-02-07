@@ -56,14 +56,20 @@ public class FlixObject: FlixGFX, Equatable {
     assignID()
     FlixGame.drawList.append(self)
     FlixGame.physicsWorld.add(self.rigidbody)
+    FlixGame.rigidbodyToFlixObject[rigidbody] = self
   }
 
   public func removeFromDrawList() {
     FlixGame.physicsWorld.remove(rigidbody)
     FlixGame.drawList.removeFirstEqualItem(self)
+    FlixGame.rigidbodyToFlixObject.removeValue(forKey: rigidbody)
   }
 
   public func handleDraw() {
+    fatalError("Must Override")
+  }
+
+  public func explode() {
     fatalError("Must Override")
   }
 }

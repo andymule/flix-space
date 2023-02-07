@@ -35,4 +35,8 @@ public class FlixBox: FlixObject {
       Raylib.drawModelWiresEx(FlixBox.model, pos, axis, angle, size, wireframeColor)
     }
   }
+
+  override public func explode() {
+    removeFromDrawList()
+  }
 }

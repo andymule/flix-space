@@ -4,8 +4,12 @@ import RaylibC
 import simd
 
 public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
-  private var maxBullets = 10
+  private let bulletsMAX = 10
   private var bulletsActiveCount = 0
+
+  private let firingCooldown: Float = 0.2
+  private var firingCooldownTimer: Float = 0.0
+
   private let model: Model = Raylib.loadModel("Resources/ship.gltf")
   public let scale: Float  // change rigidbody scale if you change this w/ getter setter
   public var lockRotationToZOnly: Bool = true
@@ -18,7 +22,8 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     self.scale = scale
     super.init()
     self.color = color
-    self.rigidbody = PHYRigidBodyFromRaylibModel(model: model, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
+    self.rigidbody = PHYRigidBodyFromRaylibModel(
+      model: model, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
 
     rigidbody.restitution = 0.3
     rigidbody.friction = 0.1
@@ -26,11 +31,13 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     rigidbody.angularDamping = 0.0
     rigidbody.position = pos.phyVector3
     rigidbody.isSleepingEnabled = false
+    // rigidbody.isCollisionEnabled
     insertIntoDrawList()
     insertIntoInputList()
   }
 
   override public func handleDraw() {
+
     if constrainPlane {
       rigidbody.position.z = 0
     }
@@ -60,19 +67,23 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     if Raylib.isKeyDown(.down) {
       rigidbody.linearVelocity += forward.scale(-0.05).phyVector3  //ship.rotation.direction.vector3.scale(-0.1).phyVector3
     }
+    firingCooldownTimer -= FlixGame.deltaTime
     if Raylib.isKeyDown(.space) {
       fire()
     }
   }
 
   public func fire() {
-    if bulletsActiveCount >= maxBullets {
+    if bulletsActiveCount >= bulletsMAX || firingCooldownTimer > 0 {
       return
     }
+    firingCooldownTimer = firingCooldown
     bulletsActiveCount += 1
     let bullet: FlixBullet = FlixBullet(pos: position, scale: 0.1, color: .red, owner: self)
-    bullet.rigidbody.linearVelocity = forward.scale(1.5).phyVector3
-    bullet.rigidbody.position = position.phyVector3 + forward.scale(scale).phyVector3
+    bullet.rigidbody.linearVelocity =
+      rigidbody.linearVelocity + forward.scale(6).phyVector3
+    rigidbody.linearVelocity = rigidbody.linearVelocity + forward.scale(-0.5).phyVector3 // recoil
+    bullet.rigidbody.position = position.phyVector3 + forward.scale(scale * 1.5).phyVector3
     bullet.rigidbody.orientation = rotation
   }
 

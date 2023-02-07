@@ -6,7 +6,7 @@ import simd
 // takes existing Model or Mesh, explodes the triangles, removes from collsion, and fades out, then removes from draw/phys lists
 public class FlixMeshExplosion: FlixObject {
     private var timeToLive: Float = 5.0
-    private var triangleList: [Triangle] = []   
+    private var triangleList: [Triangle] = []
 
     init (model: Model, color: Color) {
         super.init()

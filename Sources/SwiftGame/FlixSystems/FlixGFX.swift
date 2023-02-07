@@ -15,4 +15,5 @@ public protocol FlixGFX {
   func handleDraw()
   func insertIntoDrawList()
   func removeFromDrawList()
+  func explode()
 }

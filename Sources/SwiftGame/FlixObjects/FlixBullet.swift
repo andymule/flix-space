@@ -45,7 +45,12 @@ public class FlixBullet: FlixObject {
   }
 
   private func die() {
+    timeToLive = 0
     removeFromDrawList()
     owner.bulletDeathCallback()
+  }
+
+  override public func explode() {
+    die()
   }
 }

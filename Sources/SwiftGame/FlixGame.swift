@@ -7,16 +7,20 @@ import simd
 
 class FlixGame {
   static let physicsWorld = PHYWorld()
+  static var rigidbodyToFlixObject: [PHYRigidBody: FlixObject] = .init() // used to trace back collisions to objects
   static var drawList: [FlixObject] = .init()
   static var inputList: [FlixInput] = .init()
-  private let camera: FlixCamera = FlixCamera()
+  
 
   static var itemID: Int = 0  // used to assign unique IDs to objects
   static var deltaTime: Float = 0
   static var time: Double = 0
+  
   var ship: FlixShip
+  private let camera: FlixCamera = FlixCamera()
 
   let wallDist: Float = 70.0
+  private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
   public init() {
     let screenWidth: Int32 = 800
@@ -39,13 +43,17 @@ class FlixGame {
   }
 
   public func run() {
+    FlixGame.physicsWorld.collisionDelegate = collisionDelegate
+    FlixGame.physicsWorld.triggerDelegate = collisionDelegate
+    FlixGame.physicsWorld.simulationDelegate = collisionDelegate
+
     while Raylib.windowShouldClose == false {
       FlixGame.inputList.forEach { $0.handleInput() }
 
       // update time
       FlixGame.deltaTime = Raylib.getFrameTime()
       FlixGame.time = Raylib.getTime()
-      FlixGame.physicsWorld.internalStepSimulation(TimeInterval(FlixGame.deltaTime))
+      FlixGame.physicsWorld.simulationTime = FlixGame.time
       camera.update(ship: ship)
 
       draw()
