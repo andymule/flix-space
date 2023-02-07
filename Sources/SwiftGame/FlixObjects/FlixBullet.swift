@@ -16,7 +16,7 @@ public class FlixBullet: FlixObject {
     super.init()
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: scale, height: scale, length: scale)
-    self.rigidbody = PHYRigidBody(type: .dynamic, shape: collisionShape)
+    self.rigidbody = PHYRigidBody(type: .dynamic(mass: 10.0), shape: collisionShape)
     rigidbody.restitution = 0.0
     rigidbody.friction = 1.0
     rigidbody.linearDamping = 0.0

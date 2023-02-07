@@ -7,7 +7,7 @@ import RaylibC
 // https://github.com/AdamEisfeld/PhyKit
 
 // example use:
-// let rigidbody : PHYRigidBody =  PHYRigidBodyFromRaylibModel(model: Raylib.loadModel("Resources/ship.gltf"), scale: 0.5, isStatic: false, collisionType: .concave)
+// let rigidbody : PHYRigidBody =  PHYRigidBodyFromRaylibModel(model: Raylib.loadModel("Resources/ship.gltf"), scale: 0.5, isStatic: false, mass: 2.2, collisionType: .concave)
 
 func RaylibGenSCNGeometryFromModel(model: Model, scale: Float) -> SCNGeometry {
   let tempMesh: Mesh = model.meshes[0]
@@ -32,11 +32,11 @@ func RaylibGenSCNGeometryFromModel(model: Model, scale: Float) -> SCNGeometry {
 }
 
 func PHYRigidBodyFromRaylibModel(
-  model: Model, scale: Float, isStatic: Bool, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType
+  model: Model, scale: Float, isStatic: Bool, mass: Float, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType
 ) -> PHYRigidBody {
   let phyGeo: PHYGeometry = PHYGeometry(scnGeometry: RaylibGenSCNGeometryFromModel(model: model, scale: scale))
   let collisionShape: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: phyGeo, type: collisionType)
-  return PHYRigidBody(type: isStatic ? .static : .dynamic, shape: collisionShape)
+  return PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
 }
 
 extension PHYVector3 {

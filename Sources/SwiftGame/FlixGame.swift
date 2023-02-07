@@ -65,7 +65,7 @@ class FlixGame {
 
   func makeBoxes(_ count: Int) {
     for _ in 0..<count {
-      var box: FlixBox = FlixBox(
+      let box: FlixBox = FlixBox(
         pos: Vector3(x: .random(in: -wallDist...wallDist), y: .random(in: -wallDist...wallDist), z: 0),
         size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
         color: .brown,

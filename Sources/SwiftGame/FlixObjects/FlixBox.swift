@@ -4,7 +4,7 @@ import RaylibC
 import simd
 
 public class FlixBox: FlixObject {
-  public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))  //Raylib.loadModel("Resources/cube.obj")
+  public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))
   public var size: Vector3 = .zero
 
   public init(pos: Vector3, size: Vector3, color: Color, isStatic: Bool) {
@@ -12,7 +12,8 @@ public class FlixBox: FlixObject {
     super.init()
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: size.x, height: size.y, length: size.z)
-    self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic, shape: collisionShape)
+    let mass: Float = size.x + size.y + size.z
+    self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
     rigidbody.restitution = 1.0
     rigidbody.friction = 0.1
     rigidbody.linearDamping = 0.0

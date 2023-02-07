@@ -6,8 +6,8 @@ public extension Array where Element: Equatable {
   }
 
   mutating func removeFirstEqualItem(_ item: Element) {
-    guard var currentItem = self.first else { return }
-    var index = 0
+    guard var currentItem: Element = self.first else { return }
+    var index: Int = 0
     while currentItem != item {
       index += 1
       currentItem = self[index]

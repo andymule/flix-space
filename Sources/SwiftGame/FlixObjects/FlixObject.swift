@@ -4,7 +4,16 @@ import RaylibC
 import simd
 
 public class FlixObject: FlixGFX, Equatable {
-
+  public enum FlixObjectType {
+    case ship
+    case asteroid
+    case bullet
+    case explosion
+    case camera
+    case uninit
+    case other
+  }
+  public let flixType: FlixObjectType = .uninit
   public var position: Vector3 {
     get {
       rigidbody.position.vector3
@@ -27,6 +36,11 @@ public class FlixObject: FlixGFX, Equatable {
   public var wireframeColor: Color = .white
 
   public var rigidbody: PHYRigidBody = PHYRigidBody(type: .dynamic, shape: PHYCollisionShapeBox(width: 1, height: 1, length: 1))
+  public var mass: Float {
+    get {
+      rigidbody.type.mass
+    }
+  }
 
   // make equateable for better array handling
   public var _id: Int = 0
@@ -50,7 +64,6 @@ public class FlixObject: FlixGFX, Equatable {
   }
 
   public func handleDraw() {
-    // print not implemented
-    print("FlixObject.handleDraw() PURPOSEFULLY not implemented")
+    fatalError("Must Override")
   }
 }

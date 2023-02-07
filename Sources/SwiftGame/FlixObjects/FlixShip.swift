@@ -18,7 +18,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     self.scale = scale
     super.init()
     self.color = color
-    self.rigidbody = PHYRigidBodyFromRaylibModel(model: model, scale: scale, isStatic: false, collisionType: .concave)
+    self.rigidbody = PHYRigidBodyFromRaylibModel(model: model, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
 
     rigidbody.restitution = 0.3
     rigidbody.friction = 0.1
