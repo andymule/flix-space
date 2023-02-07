@@ -5,15 +5,17 @@ import simd
 
 public class FlixBullet: FlixObject {
   private var timeToLive: Float = 5.0
+  let owner: FlixCanShoot
 
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))  //Raylib.loadModel("Resources/cube.obj")
   public var scale: Float
 
-  public init(pos: Vector3, scale: Float, color: Color) {
+  public init(pos: Vector3, scale: Float, color: Color, owner: FlixCanShoot) {
     self.scale = scale
+    self.owner = owner
     super.init()
     self.color = color
-    let collisionShape = PHYCollisionShapeBox(width: scale, height: scale, length: scale)
+    let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: scale, height: scale, length: scale)
     self.rigidbody = PHYRigidBody(type: .dynamic, shape: collisionShape)
     rigidbody.restitution = 0.0
     rigidbody.friction = 1.0
@@ -27,7 +29,7 @@ public class FlixBullet: FlixObject {
   override public func handleDraw() {
     timeToLive -= FlixGame.deltaTime
     if timeToLive <= 0 {
-      removeFromDrawList()
+      die()
       return
     }
     if constrainPlane {
@@ -40,5 +42,10 @@ public class FlixBullet: FlixObject {
     if wireframe {
       Raylib.drawModelWiresEx(FlixBullet.model, pos, axis, angle, Vector3(scale), wireframeColor)
     }
+  }
+
+  private func die() {
+    removeFromDrawList()
+    owner.bulletDeathCallback()
   }
 }

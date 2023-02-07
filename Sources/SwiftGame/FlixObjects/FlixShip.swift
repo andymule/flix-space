@@ -3,7 +3,9 @@ import Raylib
 import RaylibC
 import simd
 
-public class FlixShip: FlixObject, FlixInput {
+public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
+  private var maxBullets = 10
+  private var bulletsActiveCount = 0
   private let model: Model = Raylib.loadModel("Resources/ship.gltf")
   public let scale: Float  // change rigidbody scale if you change this w/ getter setter
   public var lockRotationToZOnly: Bool = true
@@ -63,10 +65,18 @@ public class FlixShip: FlixObject, FlixInput {
     }
   }
 
-  func fire() {
-    let bullet = FlixBullet(pos: position, scale: 0.1, color: .red)
+  public func fire() {
+    if bulletsActiveCount >= maxBullets {
+      return
+    }
+    bulletsActiveCount += 1
+    let bullet: FlixBullet = FlixBullet(pos: position, scale: 0.1, color: .red, owner: self)
     bullet.rigidbody.linearVelocity = forward.scale(1.5).phyVector3
     bullet.rigidbody.position = position.phyVector3 + forward.scale(scale).phyVector3
     bullet.rigidbody.orientation = rotation
+  }
+
+  public func bulletDeathCallback() {
+    bulletsActiveCount -= 1
   }
 }

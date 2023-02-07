@@ -28,6 +28,7 @@ public class FlixObject: FlixGFX, Equatable {
 
   public var rigidbody: PHYRigidBody = PHYRigidBody(type: .dynamic, shape: PHYCollisionShapeBox(width: 1, height: 1, length: 1))
 
+  // make equateable for better array handling
   public var _id: Int = 0
   public static func == (lhs: FlixObject, rhs: FlixObject) -> Bool {
     lhs._id == rhs._id
