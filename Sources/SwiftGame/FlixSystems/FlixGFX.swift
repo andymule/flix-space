@@ -9,15 +9,10 @@ public protocol FlixGFX {
   var wireframe: Bool { get }
   var wireframeColor: Color { get }
   var rigidbody: PHYRigidBody { get }
-  var forward: Vector3 { get }
+  // var forward: Vector3 { get }
+  var _id: Int { get }
 
   func handleDraw()
-  func insertIntoDrawList() 
-}
-
-extension FlixGFX {
-  public func insertIntoDrawList() {
-    FlixGame.drawList.append(self)
-    FlixGame.physicsWorld.add(self.rigidbody)
-  }
+  func insertIntoDrawList()
+  func removeFromDrawList()
 }

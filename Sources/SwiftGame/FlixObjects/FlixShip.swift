@@ -3,40 +3,21 @@ import Raylib
 import RaylibC
 import simd
 
-struct FlixShip: FlixGFX, FlixInput {
+public class FlixShip: FlixObject, FlixInput {
   private let model: Model = Raylib.loadModel("Resources/ship.gltf")
-  public var position: Vector3 {
-    get {
-      rigidbody.position.vector3
-    }
-    set {
-      rigidbody.position = newValue.phyVector3
-    }
-  }
   public let scale: Float  // change rigidbody scale if you change this w/ getter setter
-  public var color: Color = .darkGray
-  public var rotation: PHYQuaternion {
-    get {
-      rigidbody.orientation
-    }
-    set {
-      rigidbody.orientation = newValue
-    }
-  }
-  public var constrainPlane: Bool = false
-  public var wireframe: Bool = false
-  public var wireframeColor: Color = .white
   public var lockRotationToZOnly: Bool = true
 
-  public let rigidbody: PHYRigidBody
   public var forward: Vector3 {
     Vector3(x: 0, y: 1, z: 0).rotate(by: rotation.quaternion)
   }
 
   public init(pos: Vector3, scale: Float, color: Color, isStatic: Bool) {
     self.scale = scale
+    super.init()
     self.color = color
     self.rigidbody = PHYRigidBodyFromRaylibModel(model: model, scale: scale, isStatic: false, collisionType: .concave)
+
     rigidbody.restitution = 0.3
     rigidbody.friction = 0.1
     rigidbody.linearDamping = 0.0
@@ -47,10 +28,11 @@ struct FlixShip: FlixGFX, FlixInput {
     insertIntoInputList()
   }
 
-  public func handleDraw() {
+  override public func handleDraw() {
     if constrainPlane {
       rigidbody.position.z = 0
     }
+    print(forward, rigidbody.orientation)
     if lockRotationToZOnly {
       rigidbody.orientation = PHYQuaternion.euler(0, 0, rigidbody.orientation.vector4.toEuler().z * 180 / Float.pi)
       rigidbody.angularVelocity = PHYVector3(0, 0, rigidbody.angularVelocity.z)
@@ -64,7 +46,7 @@ struct FlixShip: FlixGFX, FlixInput {
     }
   }
 
-  func handleInput() {
+  public func handleInput() {
     if Raylib.isKeyDown(.right) {
       rigidbody.angularVelocity += PHYVector3(x: 0, y: 0, z: -0.05)
     }
@@ -77,5 +59,15 @@ struct FlixShip: FlixGFX, FlixInput {
     if Raylib.isKeyDown(.down) {
       rigidbody.linearVelocity += forward.scale(-0.05).phyVector3  //ship.rotation.direction.vector3.scale(-0.1).phyVector3
     }
+    if Raylib.isKeyDown(.space) {
+      fire()
+    }
+  }
+
+  func fire() {
+    let bullet = FlixBullet(pos: position, scale: 0.1, color: .red)
+    bullet.rigidbody.linearVelocity = forward.scale(1.5).phyVector3
+    bullet.rigidbody.position = position.phyVector3 + forward.scale(scale).phyVector3
+    bullet.rigidbody.orientation = rotation
   }
 }

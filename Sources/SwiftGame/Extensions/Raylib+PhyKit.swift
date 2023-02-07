@@ -50,6 +50,10 @@ extension PHYVector3 {
   public static func += (lhs: inout PHYVector3, rhs: PHYVector3) {
     lhs = PHYVector3(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
   }
+
+  public static func + (lhs: PHYVector3, rhs: PHYVector3) -> PHYVector3 {
+    PHYVector3(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
+  }
 }
 
 extension Vector3 {

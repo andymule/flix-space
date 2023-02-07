@@ -3,38 +3,15 @@ import Raylib
 import RaylibC
 import simd
 
-public struct FlixBox: FlixGFX {
+public class FlixBox: FlixObject {
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))  //Raylib.loadModel("Resources/cube.obj")
-  public var position: Vector3 {
-    get {
-      rigidbody.position.vector3
-    }
-    set {
-      rigidbody.position = newValue.phyVector3
-    }
-  }
-  public var size: Vector3
-  public var color: Color
-  public var rotation: PHYQuaternion {
-    get {
-      rigidbody.orientation
-    }
-    set {
-      rigidbody.orientation = newValue
-    }
-  }
-  public var constrainPlane: Bool = true
-  public var wireframe: Bool = false
-  public var wireframeColor: Color = .white
+  public var size: Vector3 = .zero
 
-  public let rigidbody: PHYRigidBody
-  public var forward: Vector3 {
-    Vector3(x: 0, y: 0, z: 1).rotate(by: rotation.quaternion)
-  }
   public init(pos: Vector3, size: Vector3, color: Color, isStatic: Bool) {
     self.size = size
+    super.init()
     self.color = color
-    let collisionShape = PHYCollisionShapeBox(width: size.x, height: size.y, length: size.z)
+    let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: size.x, height: size.y, length: size.z)
     self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic, shape: collisionShape)
     rigidbody.restitution = 1.0
     rigidbody.friction = 0.1
@@ -45,7 +22,7 @@ public struct FlixBox: FlixGFX {
     insertIntoDrawList()
   }
 
-  public func handleDraw() {
+  override public func handleDraw() {
     if constrainPlane {
       rigidbody.position.z = 0
     }
