@@ -6,53 +6,53 @@ import simd
 // GLSL 4.1
 
 class FlixGame {
-  let physicsWorld = PHYWorld()
-  var drawList: [FlixGFX] = .init()
-  var inputList: [FlixInput] = .init()
+  static let physicsWorld = PHYWorld()
+  static var drawList: [FlixGFX] = .init()
+  static var inputList: [FlixInput] = .init()
+  static var camera: Camera3D = Camera3D(
+    position: Vector3(x: 0.0, y: 0.0, z: 10.0),
+    target: Vector3(x: 0.0, y: 0.0, z: 0.0),
+    up: Vector3(x: 0.0, y: 1.0, z: 0.0),
+    fovy: 45.0,
+    _projection: 0)  // CAMERA_PERSPECTIVE
+  var ship: FlixShip
 
-  public func run() {
+  public init() {
     let screenWidth: Int32 = 800
     let screenHeight: Int32 = 450
+
     Raylib.setConfigFlags(.msaa4xHint | .vsyncHint)
     Raylib.initWindow(screenWidth, screenHeight, "FlixGame")
     Raylib.setTargetFPS(90)
 
-    var camera = Camera3D(
-      position: Vector3(x: 0.0, y: 0.0, z: 10.0),
-      target: Vector3(x: 0.0, y: 0.0, z: 0.0),
-      up: Vector3(x: 0.0, y: 1.0, z: 0.0),
-      fovy: 45.0,
-      _projection: 0)  // CAMERA_PERSPECTIVE
+    FlixGame.physicsWorld.gravity = PHYVector3(x: 0, y: 0, z: 0)  // y = -9.8
 
-    physicsWorld.gravity = PHYVector3(x: 0, y: 0, z: 0)  // y = -9.8
-
-    makeBoxes(20)
-    makeWalls()
-
-    var ship = FlixShip(
+    ship = FlixShip(
       pos: Vector3(x: 0, y: 0, z: 0),
       scale: 0.2,
       color: .white,
       isStatic: false)
     ship.constrainPlane = true
     ship.rigidbody.angularVelocity = PHYVector3(x: 0, y: 0, z: 0)
-    inputList.append(ship)
-    physicsWorld.add(ship.rigidbody)
-    drawList.append(ship)
 
+    makeBoxes(20)
+    makeWalls()
+  }
+
+  public func run() {
     while Raylib.windowShouldClose == false {
-      inputList.forEach { $0.handleInput() }
+      FlixGame.inputList.forEach { $0.handleInput() }
 
       // update time
       let deltaTime = Raylib.getFrameTime()
       // let time = Raylib.getTime()
-      physicsWorld.internalStepSimulation(TimeInterval(deltaTime))
-      camera.target = ship.position
+      FlixGame.physicsWorld.internalStepSimulation(TimeInterval(deltaTime))
+      FlixGame.camera.target = ship.position
 
       Raylib.beginDrawing()
       Raylib.clearBackground(.myDarkGrey)
-      Raylib.beginMode3D(camera)
-      drawList.forEach { $0.handleDraw() }
+      Raylib.beginMode3D(FlixGame.camera)
+      FlixGame.drawList.forEach { $0.handleDraw() }
       Raylib.endMode3D()
       // Raylib.drawFPS(10, 10)
       Raylib.endDrawing()
@@ -70,39 +70,29 @@ class FlixGame {
       box.rotation = .euler(Float.random(in: 0..<360), Float.random(in: 0..<360), Float.random(in: 0..<360), .degrees)
       box.rigidbody.angularVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), Float.random(in: -2..<2))
       box.rigidbody.linearVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), 0)
-      physicsWorld.add(box.rigidbody)
-      drawList.append(box)
     }
   }
 
   func makeWalls() {
-    let wallLeft = FlixBox(
-      pos: Vector3(x: -7, y: 0, z: 0),
-      size: Vector3(x: 0.1, y: 100, z: 0.1),
+    _ = FlixBox(
+      pos: Vector3(x: -70, y: 0, z: 0),
+      size: Vector3(x: 0.1, y: 1000, z: 0.1),
       color: .rayWhite,
       isStatic: true)
-    let wallRight = FlixBox(
-      pos: Vector3(x: 7, y: 0, z: 0),
-      size: Vector3(x: 0.1, y: 100, z: 0.1),
+    _ = FlixBox(
+      pos: Vector3(x: 70, y: 0, z: 0),
+      size: Vector3(x: 0.1, y: 1000, z: 0.1),
       color: .rayWhite,
       isStatic: true)
-    let wallTop = FlixBox(
-      pos: Vector3(x: 0, y: 4, z: 0),
-      size: Vector3(x: 100, y: 0.1, z: 0.1),
+    _ = FlixBox(
+      pos: Vector3(x: 0, y: 40, z: 0),
+      size: Vector3(x: 1000, y: 0.1, z: 0.1),
       color: .rayWhite,
       isStatic: true)
-    let wallBottom = FlixBox(
-      pos: Vector3(x: 0, y: -4, z: 0),
-      size: Vector3(x: 100, y: 0.1, z: 0.1),
+    _ = FlixBox(
+      pos: Vector3(x: 0, y: -40, z: 0),
+      size: Vector3(x: 1000, y: 0.1, z: 0.1),
       color: .rayWhite,
       isStatic: true)
-    physicsWorld.add(wallLeft.rigidbody)
-    drawList.append(wallLeft)
-    physicsWorld.add(wallRight.rigidbody)
-    drawList.append(wallRight)
-    physicsWorld.add(wallTop.rigidbody)
-    drawList.append(wallTop)
-    physicsWorld.add(wallBottom.rigidbody)
-    drawList.append(wallBottom)
   }
 }

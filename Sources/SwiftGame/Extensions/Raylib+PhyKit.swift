@@ -10,31 +10,33 @@ import RaylibC
 // let rigidbody : PHYRigidBody =  PHYRigidBodyFromRaylibModel(model: Raylib.loadModel("Resources/ship.gltf"), scale: 0.5, isStatic: false, collisionType: .concave)
 
 func RaylibGenSCNGeometryFromModel(model: Model, scale: Float) -> SCNGeometry {
-    let tempMesh: Mesh = model.meshes[0]
-    let tVerts: UnsafeMutablePointer<Float>? = tempMesh.vertices
-    var verticesConverted: [SCNVector3] = []
-    for v: Int in Int(0)..<Int(tempMesh.vertexCount) {
-      let x: Float = tVerts![v*3] * scale
-      let y: Float = tVerts![v*3+1] * scale
-      let z: Float = tVerts![v*3+2] * scale
-      verticesConverted.append(SCNVector3(x, y, z))
-    }
-    let positionSource: SCNGeometrySource = SCNGeometrySource(vertices: verticesConverted)
-    var indices: [UInt16] = .init()
-    for i: Int in Int(0)..<Int(tempMesh.triangleCount) {
-      indices.append(UInt16(tempMesh.indices[i*3]))
-      indices.append(UInt16(tempMesh.indices[i*3+1]))
-      indices.append(UInt16(tempMesh.indices[i*3+2]))
-    }
-    let element: SCNGeometryElement = SCNGeometryElement(indices: indices, primitiveType: .triangles)
-    let geometry: SCNGeometry = SCNGeometry(sources: [positionSource], elements: [element])
-    return geometry
+  let tempMesh: Mesh = model.meshes[0]
+  let tVerts: UnsafeMutablePointer<Float>? = tempMesh.vertices
+  var verticesConverted: [SCNVector3] = []
+  for v: Int in Int(0)..<Int(tempMesh.vertexCount) {
+    let x: Float = tVerts![v * 3] * scale
+    let y: Float = tVerts![v * 3 + 1] * scale
+    let z: Float = tVerts![v * 3 + 2] * scale
+    verticesConverted.append(SCNVector3(x, y, z))
   }
+  let positionSource: SCNGeometrySource = SCNGeometrySource(vertices: verticesConverted)
+  var indices: [UInt16] = .init()
+  for i: Int in Int(0)..<Int(tempMesh.triangleCount) {
+    indices.append(UInt16(tempMesh.indices[i * 3]))
+    indices.append(UInt16(tempMesh.indices[i * 3 + 1]))
+    indices.append(UInt16(tempMesh.indices[i * 3 + 2]))
+  }
+  let element: SCNGeometryElement = SCNGeometryElement(indices: indices, primitiveType: .triangles)
+  let geometry: SCNGeometry = SCNGeometry(sources: [positionSource], elements: [element])
+  return geometry
+}
 
-func PHYRigidBodyFromRaylibModel(model: Model, scale: Float, isStatic : Bool, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType) -> PHYRigidBody {
-   let phyGeo: PHYGeometry = PHYGeometry(scnGeometry: RaylibGenSCNGeometryFromModel(model: model, scale: scale))
-    let collisionShape: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: phyGeo, type: collisionType) 
-   return PHYRigidBody(type: isStatic ? .static : .dynamic, shape: collisionShape)
+func PHYRigidBodyFromRaylibModel(
+  model: Model, scale: Float, isStatic: Bool, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType
+) -> PHYRigidBody {
+  let phyGeo: PHYGeometry = PHYGeometry(scnGeometry: RaylibGenSCNGeometryFromModel(model: model, scale: scale))
+  let collisionShape: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: phyGeo, type: collisionType)
+  return PHYRigidBody(type: isStatic ? .static : .dynamic, shape: collisionShape)
 }
 
 extension PHYVector3 {
@@ -55,7 +57,7 @@ extension Vector3 {
     PHYVector3(x: x, y: y, z: z)
   }
 
-  init (_ uniform: Float) {
+  init(_ uniform: Float) {
     self.init(x: uniform, y: uniform, z: uniform)
   }
 

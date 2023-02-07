@@ -13,7 +13,7 @@ struct FlixShip: FlixGFX, FlixInput {
       rigidbody.position = newValue.phyVector3
     }
   }
-  public let scale: Float // change rigidbody scale if you change this w/ getter setter
+  public let scale: Float  // change rigidbody scale if you change this w/ getter setter
   public var color: Color = .darkGray
   public var rotation: PHYQuaternion {
     get {
@@ -28,23 +28,23 @@ struct FlixShip: FlixGFX, FlixInput {
   public var wireframeColor: Color = .white
   public var lockRotationToZOnly: Bool = true
 
-  // public var collisionShape: PHYCollisionShape
   public let rigidbody: PHYRigidBody
   public var forward: Vector3 {
     Vector3(x: 0, y: 1, z: 0).rotate(by: rotation.quaternion)
   }
 
   public init(pos: Vector3, scale: Float, color: Color, isStatic: Bool) {
-    // model = Raylib.loadModel("Resources/ship.gltf")
     self.scale = scale
     self.color = color
-    self.rigidbody =  PHYRigidBodyFromRaylibModel(model: model, scale: scale, isStatic: false, collisionType: .concave)
+    self.rigidbody = PHYRigidBodyFromRaylibModel(model: model, scale: scale, isStatic: false, collisionType: .concave)
     rigidbody.restitution = 0.3
     rigidbody.friction = 0.1
     rigidbody.linearDamping = 0.0
     rigidbody.angularDamping = 0.0
     rigidbody.position = pos.phyVector3
     rigidbody.isSleepingEnabled = false
+    insertIntoDrawList()
+    insertIntoInputList()
   }
 
   public func handleDraw() {
@@ -78,37 +78,4 @@ struct FlixShip: FlixGFX, FlixInput {
       rigidbody.linearVelocity += forward.scale(-0.05).phyVector3  //ship.rotation.direction.vector3.scale(-0.1).phyVector3
     }
   }
-
-  // Example creating SCNGeometry using vertex data
-  struct Vertex {
-    let x: Float
-    let y: Float
-    let z: Float
-    let r: Float
-    let g: Float
-    let b: Float
-  }
-
-  // static let vertices: [Vertex] = [
-  //   Vertex(x: 0.0, y: 0.0, z: 0.0, r: 1.0, g: 0.0, b: 0.0),
-  //   Vertex(x: 1.0, y: 0.0, z: 0.0, r: 0.0, g: 0.0, b: 1.0),
-  //   Vertex(x: 1.0, y: 0.0, z: -0.5, r: 0.0, g: 0.0, b: 1.0),
-  //   Vertex(x: 0.0, y: 1.0, z: 0.0, r: 0.0, g: 0.0, b: 1.0),
-  // ]
-
-  // static func ShipMesh() ->  Mesh {
-  //   let verticesConverted = vertices.map { Vector3(x: $0.x, y: $0.y, z: $0.z) }
-
-  //   var mesh = Mesh()
-  //     // mesh.triangleCount = 2;
-  //     // mesh.vertexCount = 4
-  //     // mesh.vertices = 
-  //     // mesh.texcoords = (float *)MemAlloc(mesh.vertexCount*2*sizeof(float));   // 3 vertices, 2 coordinates each (x, y)
-  //     // mesh.normals = (float *)MemAlloc(mesh.vertexCount*3*sizeof(float));     // 3 vertices, 3 coordinates each (x, y, z)
-
-  //   return mesh
-  // }
-
-  
 }
-
