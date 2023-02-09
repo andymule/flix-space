@@ -28,12 +28,12 @@ class CollisionDelegate : PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PH
         // print class name of both colliders
         let flixObjA: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyA!]!
         let flixObjB: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyB!]!
-        if flixObjA is FlixBullet && flixObjB is FlixBox {
-            flixObjA.explode()
+        if flixObjA.flixType == .bullet && flixObjB.flixType == .asteroid {
+            // flixObjA.explode()
             flixObjB.explode()
-        } else if flixObjA is FlixBox && flixObjB is FlixBullet {
+        }
+        if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
             flixObjA.explode()
-            flixObjB.explode()
         }
     }
 

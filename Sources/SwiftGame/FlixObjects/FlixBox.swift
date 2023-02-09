@@ -7,7 +7,7 @@ public class FlixBox: FlixObject {
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))
   public var size: Vector3 = .zero
 
-  public init(pos: Vector3, size: Vector3, color: Color, isStatic: Bool) {
+  public init(pos: Vector3, size: Vector3, color: Color, isStatic: Bool, flixType: FlixObjectType = .asteroid, autoInsertIntoList: Bool = true) {
     self.size = size
     super.init()
     self.color = color
@@ -20,7 +20,10 @@ public class FlixBox: FlixObject {
     rigidbody.angularDamping = 0.0
     rigidbody.position = pos.phyVector3
     rigidbody.isSleepingEnabled = false
-    insertIntoDrawList()
+    self.flixType = flixType
+    if autoInsertIntoList {
+      insertIntoDrawList()
+    }
   }
 
   override public func handleDraw() {
@@ -37,6 +40,8 @@ public class FlixBox: FlixObject {
   }
 
   override public func explode() {
+    _ = FlixMeshExplosion(
+      model: FlixBox.model, startingVel: rigidbody.linearVelocity.vector3, centerPos: rigidbody.position.vector3, color: color)
     removeFromDrawList()
   }
 }

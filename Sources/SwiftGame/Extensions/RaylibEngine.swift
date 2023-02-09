@@ -6,3 +6,9 @@ public extension ConfigFlags {
         ConfigFlags(rawValue: lhs.rawValue | rhs.rawValue)
     }
 }
+
+public extension Mesh {
+  func indexAt(_ pos: Int) -> Int {
+    Int(self.indices[pos])
+  }
+}

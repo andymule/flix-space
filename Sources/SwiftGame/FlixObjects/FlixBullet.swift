@@ -23,6 +23,7 @@ public class FlixBullet: FlixObject {
     rigidbody.angularDamping = 0.0
     rigidbody.position = pos.phyVector3
     rigidbody.isSleepingEnabled = false
+    flixType = .bullet
     insertIntoDrawList()
   }
 

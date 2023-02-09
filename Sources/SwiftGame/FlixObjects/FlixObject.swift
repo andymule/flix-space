@@ -9,11 +9,13 @@ public class FlixObject: FlixGFX, Equatable {
     case asteroid
     case bullet
     case explosion
+    case explosionManager
     case camera
+    case wall
     case uninit
     case other
   }
-  public let flixType: FlixObjectType = .uninit
+  public var flixType: FlixObjectType = .uninit
   public var position: Vector3 {
     get {
       rigidbody.position.vector3
@@ -54,6 +56,9 @@ public class FlixObject: FlixGFX, Equatable {
 
   public func insertIntoDrawList() {
     assignID()
+    if (flixType == .uninit) {
+      fatalError("Must declare flixType before inserting into draw list")
+    }
     FlixGame.drawList.append(self)
     FlixGame.physicsWorld.add(self.rigidbody)
     FlixGame.rigidbodyToFlixObject[rigidbody] = self

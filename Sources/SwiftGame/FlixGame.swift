@@ -7,15 +7,14 @@ import simd
 
 class FlixGame {
   static let physicsWorld = PHYWorld()
-  static var rigidbodyToFlixObject: [PHYRigidBody: FlixObject] = .init() // used to trace back collisions to objects
+  static var rigidbodyToFlixObject: [PHYRigidBody: FlixObject] = .init()  // used to trace back collisions to objects
   static var drawList: [FlixObject] = .init()
   static var inputList: [FlixInput] = .init()
-  
 
   static var itemID: Int = 0  // used to assign unique IDs to objects
   static var deltaTime: Float = 0
   static var time: Double = 0
-  
+
   var ship: FlixShip
   private let camera: FlixCamera = FlixCamera()
 
@@ -89,21 +88,26 @@ class FlixGame {
       pos: Vector3(x: -wallDist, y: 0, z: 0),
       size: Vector3(x: 10, y: 1000, z: 0.1),
       color: .rayWhite,
-      isStatic: true)
+      isStatic: true,
+      flixType: .wall
+    )
     _ = FlixBox(
       pos: Vector3(x: wallDist, y: 0, z: 0),
       size: Vector3(x: 10, y: 1000, z: 0.1),
       color: .rayWhite,
-      isStatic: true)
+      isStatic: true,
+      flixType: .wall)
     _ = FlixBox(
       pos: Vector3(x: 0, y: wallDist, z: 0),
       size: Vector3(x: 1000, y: 10, z: 0.1),
       color: .rayWhite,
-      isStatic: true)
+      isStatic: true,
+      flixType: .wall)
     _ = FlixBox(
       pos: Vector3(x: 0, y: -wallDist, z: 0),
       size: Vector3(x: 1000, y: 10, z: 0.1),
       color: .rayWhite,
-      isStatic: true)
+      isStatic: true,
+      flixType: .wall)
   }
 }

@@ -31,7 +31,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     rigidbody.angularDamping = 0.0
     rigidbody.position = pos.phyVector3
     rigidbody.isSleepingEnabled = false
-    // rigidbody.isCollisionEnabled
+    flixType = .ship
     insertIntoDrawList()
     insertIntoInputList()
   }
@@ -82,7 +82,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     let bullet: FlixBullet = FlixBullet(pos: position, scale: 0.1, color: .red, owner: self)
     bullet.rigidbody.linearVelocity =
       rigidbody.linearVelocity + forward.scale(6).phyVector3
-    rigidbody.linearVelocity = rigidbody.linearVelocity + forward.scale(-0.5).phyVector3 // recoil
+    rigidbody.linearVelocity = rigidbody.linearVelocity + forward.scale(-0.5).phyVector3  // recoil
     bullet.rigidbody.position = position.phyVector3 + forward.scale(scale * 1.5).phyVector3
     bullet.rigidbody.orientation = rotation
   }
