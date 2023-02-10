@@ -11,7 +11,10 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
   private var firingCooldownTimer: Float = 0.0
 
   private let model: Model = Raylib.loadModel("Resources/ship.gltf")
+  // cant get blender to export with correct orientation
+  private let boostmodel: Model = Raylib.loadModel("Resources/boost22.glb")
   public let scale: Float  // change rigidbody scale if you change this w/ getter setter
+  public let boostScale: Float = 0.4
   public var lockRotationToZOnly: Bool = true
 
   public var forward: Vector3 {
@@ -49,6 +52,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     var (axis, angle) = rigidbody.orientation.vector4.toAxisAngle()
     angle = angle * 180 / Float.pi
     Raylib.drawModelEx(model, pos, axis, angle, Vector3(scale), color)
+    // Raylib.drawModelEx(boostmodel, pos - forward.scale(scale), axis, angle, Vector3(boostScale), color)
     if wireframe {
       Raylib.drawModelWiresEx(model, pos, axis, angle, Vector3(scale), wireframeColor)
     }
