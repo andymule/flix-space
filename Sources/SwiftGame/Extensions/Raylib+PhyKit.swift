@@ -46,11 +46,9 @@ extension PHYVector3 {
   public var vector2: Vector2 {
     Vector2(x: x, y: y)
   }
-
   public static func += (lhs: inout PHYVector3, rhs: PHYVector3) {
     lhs = PHYVector3(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
   }
-
   public static func + (lhs: PHYVector3, rhs: PHYVector3) -> PHYVector3 {
     PHYVector3(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
   }
@@ -60,11 +58,9 @@ extension Vector3 {
   public var phyVector3: PhyKit.PHYVector3 {
     PHYVector3(x: x, y: y, z: z)
   }
-
   init(_ uniform: Float) {
     self.init(x: uniform, y: uniform, z: uniform)
   }
-
   static func random(in range: ClosedRange<Float>) -> Vector3 {
     Vector3(
       x: Float.random(in: range),
