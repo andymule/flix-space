@@ -35,8 +35,9 @@ func PHYRigidBodyFromRaylibModel(
   model: Model, scale: Float, isStatic: Bool, mass: Float, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType
 ) -> PHYRigidBody {
   let phyGeo: PHYGeometry = PHYGeometry(scnGeometry: RaylibGenSCNGeometryFromModel(model: model, scale: scale))
-  let collisionShape: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: phyGeo, type: collisionType)
+  let collisionShape: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: phyGeo, type: .concave)
   return PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
+  // let a = PHYRigidBody(type: PHYRigidBodyType, shape: PHYCollisionShape)
 }
 
 extension PHYVector3 {

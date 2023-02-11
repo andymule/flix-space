@@ -6,7 +6,7 @@ import simd
 // GLSL 4.1
 
 class FlixGame {
-  static let physicsWorld = PHYWorld()
+  static let physicsWorld: PHYWorld = PHYWorld()
   static var rigidbodyToFlixObject: [PHYRigidBody: FlixObject] = .init()  // used to trace back collisions to objects
   static var drawList: [FlixObject] = .init()
   static var inputList: [FlixInput] = .init()

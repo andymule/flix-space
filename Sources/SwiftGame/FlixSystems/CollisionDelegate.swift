@@ -25,14 +25,12 @@ class CollisionDelegate : PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PH
     }
 
     func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, collisionDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair) {
-        // print class name of both colliders
         let flixObjA: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyA!]!
         let flixObjB: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyB!]!
         if flixObjA.flixType == .bullet && flixObjB.flixType == .asteroid {
-            // flixObjA.explode()
             flixObjB.explode()
         }
-        if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
+        else if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
             flixObjA.explode()
         }
     }
@@ -46,3 +44,6 @@ class CollisionDelegate : PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PH
     }
 //    if collision.nodeA.name == "player" && collision.nodeB.name == "enemy" {
 }
+
+// make the collision layers
+// let layer1: PHYCollisionLayer = PHYCollisionLayer(name: "layer1")

@@ -10,13 +10,14 @@ public class FlixBullet: FlixObject {
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))  //Raylib.loadModel("Resources/cube.obj")
   public var scale: Float
 
-  public init(pos: Vector3, scale: Float, color: Color, owner: FlixCanShoot) {
+  public init(pos: Vector3, scale: Float, color: Color, owner: FlixCanShoot, angularVel: PHYVector3 = PHYVector3(0, 0, 0)) {
     self.scale = scale
     self.owner = owner
     super.init()
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: scale, height: scale, length: scale)
     self.rigidbody = PHYRigidBody(type: .dynamic(mass: 10.0), shape: collisionShape)
+    rigidbody.angularVelocity = angularVel
     rigidbody.restitution = 0.0
     rigidbody.friction = 1.0
     rigidbody.linearDamping = 0.0
