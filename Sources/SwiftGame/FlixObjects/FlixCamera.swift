@@ -20,6 +20,6 @@ public class FlixCamera {
     public func update( ship : FlixShip) {
         camera.position = Vector3(x: ship.position.x, y: ship.position.y, z: 10)
         camera.target = ship.position // + sqrt( ship.rigidbody.linearVelocity.vector3
-        camera.fovy = min(max(45, ship.rigidbody.linearVelocity.vector3.length * 5), 80)
+        camera.fovy = min(max(45, ship.rigidbody!.linearVelocity.vector3.length * 5), 80)
     }
 }

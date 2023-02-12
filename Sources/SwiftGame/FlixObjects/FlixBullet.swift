@@ -17,28 +17,31 @@ public class FlixBullet: FlixObject {
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: scale, height: scale, length: scale)
     self.rigidbody = PHYRigidBody(type: .dynamic(mass: 10.0), shape: collisionShape)
-    rigidbody.angularVelocity = angularVel
-    rigidbody.restitution = 0.0
-    rigidbody.friction = 1.0
-    rigidbody.linearDamping = 0.0
-    rigidbody.angularDamping = 0.0
-    rigidbody.position = pos.phyVector3
-    rigidbody.isSleepingEnabled = false
+    rigidbody!.angularVelocity = angularVel
+    rigidbody!.restitution = 0.0
+    rigidbody!.friction = 1.0
+    rigidbody!.linearDamping = 0.0
+    rigidbody!.angularDamping = 0.0
+    rigidbody!.position = pos.phyVector3
+    rigidbody!.isSleepingEnabled = false
     flixType = .bullet
     insertIntoDrawList()
   }
 
   override public func handleDraw() {
+    if isDying {
+      return
+    }
     timeToLive -= FlixGame.deltaTime
     if timeToLive <= 0 {
       die()
       return
     }
     if constrainPlane {
-      rigidbody.position.z = 0
+      rigidbody!.position.z = 0
     }
-    let pos: Vector3 = rigidbody.position.vector3
-    var (axis, angle) = rigidbody.orientation.vector4.toAxisAngle()
+    let pos: Vector3 = rigidbody!.position.vector3
+    var (axis, angle) = rigidbody!.orientation.vector4.toAxisAngle()
     angle = angle * 180 / Float.pi
     Raylib.drawModelEx(FlixBullet.model, pos, axis, angle, Vector3(scale), color)
     if wireframe {
@@ -47,12 +50,19 @@ public class FlixBullet: FlixObject {
   }
 
   private func die() {
+    if isDying {
+      return
+    }
     timeToLive = 0
+    isDying = true
     removeFromDrawList()
     owner.bulletDeathCallback()
   }
 
   override public func explode() {
+    if isDying {
+      return
+    }
     die()
   }
 }

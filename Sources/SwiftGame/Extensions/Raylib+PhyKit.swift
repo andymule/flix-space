@@ -9,14 +9,15 @@ import RaylibC
 // example use:
 // let rigidbody : PHYRigidBody =  PHYRigidBodyFromRaylibModel(model: Raylib.loadModel("Resources/ship.gltf"), scale: 0.5, isStatic: false, mass: 2.2, collisionType: .concave)
 
-func RaylibGenSCNGeometryFromModel(model: Model, scale: Float) -> SCNGeometry {
+func RaylibGenSCNGeometryFromModel(model: Model, scale: Float, size: Vector3 = .one) -> SCNGeometry {
   let tempMesh: Mesh = model.meshes[0]
   let tVerts: UnsafeMutablePointer<Float>? = tempMesh.vertices
   var verticesConverted: [SCNVector3] = []
   for v: Int in Int(0)..<Int(tempMesh.vertexCount) {
-    let x: Float = tVerts![v * 3] * scale
-    let y: Float = tVerts![v * 3 + 1] * scale
-    let z: Float = tVerts![v * 3 + 2] * scale
+    // print(tVerts![v * 3])
+    let x: Float = tVerts![v * 3] * scale * size.x
+    let y: Float = tVerts![v * 3 + 1] * scale * size.y
+    let z: Float = tVerts![v * 3 + 2] * scale * size.z
     verticesConverted.append(SCNVector3(x, y, z))
   }
   let positionSource: SCNGeometrySource = SCNGeometrySource(vertices: verticesConverted)
@@ -32,9 +33,10 @@ func RaylibGenSCNGeometryFromModel(model: Model, scale: Float) -> SCNGeometry {
 }
 
 func PHYRigidBodyFromRaylibModel(
-  model: Model, scale: Float, isStatic: Bool, mass: Float, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType
+  model: Model, scale: Float, isStatic: Bool, mass: Float, collisionType: PHYCollisionShapeGeometry.PHYCollisionShapeGeometryType,
+  size: Vector3 = .one
 ) -> PHYRigidBody {
-  let phyGeo: PHYGeometry = PHYGeometry(scnGeometry: RaylibGenSCNGeometryFromModel(model: model, scale: scale))
+  let phyGeo: PHYGeometry = PHYGeometry(scnGeometry: RaylibGenSCNGeometryFromModel(model: model, scale: scale, size: size))
   let collisionShape: PHYCollisionShapeGeometry = PHYCollisionShapeGeometry(geometry: phyGeo, type: .concave)
   return PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
   // let a = PHYRigidBody(type: PHYRigidBodyType, shape: PHYCollisionShape)
@@ -68,6 +70,19 @@ extension Vector3 {
       y: Float.random(in: range),
       z: Float.random(in: range)
     )
+  }
+
+  static func / (lhs: Vector3, rhs: Vector3) -> Vector3 {
+    Vector3(x: lhs.x / rhs.x, y: lhs.y / rhs.y, z: lhs.z / rhs.z)
+  }
+
+  static func / (lhs: Vector3, rhs: Float) -> Vector3 {
+    Vector3(x: lhs.x / rhs, y: lhs.y / rhs, z: lhs.z / rhs)
+  }
+
+  static func / (lhs: Vector3, rhs: Int) -> Vector3 {
+    let rh2: Float = Float(rhs)
+    return Vector3(x: lhs.x / rh2, y: lhs.y / rh2, z: lhs.z / rh2)
   }
 }
 

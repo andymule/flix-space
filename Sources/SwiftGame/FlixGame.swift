@@ -62,7 +62,7 @@ class FlixGame {
 
   func draw() {
     Raylib.beginDrawing()
-    Raylib.clearBackground(.myDarkGrey)
+    Raylib.clearBackground(.myDarkGreyFadey)
     Raylib.beginMode3D(camera.camera)
     FlixGame.drawList.forEach { $0.handleDraw() }
     Raylib.endMode3D()
@@ -75,11 +75,11 @@ class FlixGame {
       let box: FlixBox = FlixBox(
         pos: Vector3(x: .random(in: -wallDist...wallDist), y: .random(in: -wallDist...wallDist), z: 0),
         size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
-        color: .brown,
+        color: Color.brown,
         isStatic: false)
       box.rotation = .euler(Float.random(in: 0..<360), Float.random(in: 0..<360), Float.random(in: 0..<360), .degrees)
-      box.rigidbody.angularVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), Float.random(in: -2..<2))
-      box.rigidbody.linearVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), 0)
+      box.rigidbody!.angularVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), Float.random(in: -2..<2))
+      box.rigidbody!.linearVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), 0)
     }
   }
 
