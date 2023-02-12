@@ -42,6 +42,7 @@ extension Raylib {
       mesh.indices[t * 6 + 3] = UInt16(t * 3 + 2)
       mesh.indices[t * 6 + 4] = UInt16(t * 3 + 1)
       mesh.indices[t * 6 + 5] = UInt16(t * 3)
+      // print(triangle)
     }
 
     Raylib.uploadMesh(&mesh, false) // manage VRAM better?
@@ -93,5 +94,10 @@ public struct Triangle {
 
   public func averagePos() -> Vector3 {
     (a + b + c) / 3.0
+  }
+
+  // pretty print
+  public var description: String {
+    return "Triangle: \(a), \(b), \(c)"
   }
 }

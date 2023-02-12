@@ -6,7 +6,7 @@ import simd
 public class FlixTriangle: FlixObject {
   public var scale: Float = 1
 
-  public init(triangle: Triangle, startingBody: PHYRigidBody, color: Color, size: Vector3 = .one) {
+  public init(triangle: Triangle, startingBody: PHYRigidBody, color: Color) {
     super.init()
     self.model = Raylib.loadModelFromMesh(Raylib.GenMeshFromTriangleArray([triangle]))
     self.color = color

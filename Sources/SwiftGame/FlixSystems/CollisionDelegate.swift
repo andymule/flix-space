@@ -4,6 +4,8 @@ import RaylibC
 import simd
 
 class CollisionDelegate : PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHYWorldSimulationDelegate {
+    var markedForRemoval: [FlixObject] = .init()
+
     func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, triggerDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair) {
         print(collisionPair.rigidBody.className, collisionPair.trigger.className)
     }
@@ -30,11 +32,22 @@ class CollisionDelegate : PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PH
         if flixObjA.flixType == .bullet && flixObjB.flixType == .asteroid {
             flixObjA.explode()
             flixObjB.explode()
+            markedForRemoval.append(flixObjA)
+            markedForRemoval.append(flixObjB)
         }
         else if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
             flixObjA.explode()
             flixObjB.explode()
+            markedForRemoval.append(flixObjA)
+            markedForRemoval.append(flixObjB)
         }
+    }
+
+    func resolveRemovals() {
+        for flixObj in markedForRemoval {
+            flixObj.die()
+        }
+        markedForRemoval.removeAll()
     }
 
     func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, collisionDidContinueAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair) {

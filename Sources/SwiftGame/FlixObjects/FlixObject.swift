@@ -17,7 +17,7 @@ public class FlixObject: Equatable {
     case other
   }
 
-  public var isStaticInstanced = false // use a static model for all shared types
+  public var isStaticInstanced = false  // use a static model for all shared types
   public var isDying = false
 
   public var model: Model?
@@ -68,7 +68,7 @@ public class FlixObject: Equatable {
 
   public func removeFromDrawList() {
     FlixGame.drawList.removeFirstEqualItem(self)
-    if !isStaticInstanced && model != nil{
+    if !isStaticInstanced && model != nil {
       Raylib.unloadModel(model!)
     }
     guard let rigidbody = rigidbody else { return }
@@ -80,8 +80,15 @@ public class FlixObject: Equatable {
     fatalError("Must Override")
   }
 
-  public func explode() {
-    isDying = true
+  public func explode(callbackData: Any? = nil) {
     fatalError("Must Override")
+  }
+
+  func die() {
+    if isDying {
+      return
+    }
+    isDying = true
+    removeFromDrawList()
   }
 }

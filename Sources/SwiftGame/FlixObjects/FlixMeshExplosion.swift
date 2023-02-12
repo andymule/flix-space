@@ -9,7 +9,7 @@ public class FlixMeshExplosion: FlixObject {
   private var fadeTimer: Float = 0.0
   private var triangleList: [FlixTriangle] = []
 
-  init(model: Model, startingBody: PHYRigidBody, color: Color, size: Vector3 = .one) {
+  init(model: Model, startingBody: PHYRigidBody, color: Color) {
     super.init()
     fadeTimer = timeToFade
     self.color = color

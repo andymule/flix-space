@@ -1,4 +1,4 @@
 public protocol FlixCanShoot {
-  func bulletDeathCallback()
+  func bulletDeathCallback(addPoints: Bool)
   func fire()
 }

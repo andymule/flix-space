@@ -7,9 +7,12 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
   private let bulletsMAX = 9999  //10
   private var bulletsActiveCount = 0
   private let recoilScale: Float = 0 //-0.2
+  private let accel: Float = 3.0
 
-  private let firingCooldown: Float = 0.1
+  private let firingCooldown: Float = 0.0 //0.1
   private var firingCooldownTimer: Float = 0.0
+
+  var score = 0
 
   // TODO need to change rigidbody scale if you change this w/ setter, and make sure the dictionary is updated to reflect new rigidbody
   // and old rigidbody is removed etc ok good job me you're doing great keep it up you're doing great you're doing great
@@ -39,7 +42,6 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
   ]
   private var isBoosting = false
   private var isBraking = false
-
   public var lockRotationToZOnly: Bool = true
 
   public var forward: Vector3 {
@@ -95,18 +97,18 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     isBoosting = false
     isBraking = false
     if Raylib.isKeyDown(.right) {
-      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: -0.05)
+      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: -accel*FlixGame.deltaTime)
     }
     if Raylib.isKeyDown(.left) {
-      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: 0.05)
+      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: accel*FlixGame.deltaTime)
     }
     if Raylib.isKeyDown(.up) {
       isBoosting = true
-      rigidbody!.linearVelocity += forward.scale(0.05).phyVector3
+      rigidbody!.linearVelocity += forward.scale(accel*FlixGame.deltaTime).phyVector3
     }
     if Raylib.isKeyDown(.down) {
       isBraking = true
-      rigidbody!.linearVelocity += forward.scale(-0.05).phyVector3
+      rigidbody!.linearVelocity += forward.scale(-accel*FlixGame.deltaTime).phyVector3
     }
     firingCooldownTimer -= FlixGame.deltaTime
     if Raylib.isKeyDown(.space) {
@@ -129,7 +131,11 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     bullet.rigidbody!.orientation = rotation
   }
 
-  public func bulletDeathCallback() {
+  public func bulletDeathCallback(addPoints: Bool = false) {
+    if addPoints {
+      score += 1
+      print("score: \(score)")
+    }
     bulletsActiveCount -= 1
   }
 }

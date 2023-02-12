@@ -4,7 +4,7 @@ import RaylibC
 import simd
 
 public class FlixBullet: FlixObject {
-  private var timeToLive: Float = 5.0
+  private var timeToLive: Float = 555.0
   let owner: FlixCanShoot
 
   public static let model: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))  //Raylib.loadModel("Resources/cube.obj")
@@ -23,7 +23,7 @@ public class FlixBullet: FlixObject {
     rigidbody!.linearDamping = 0.0
     rigidbody!.angularDamping = 0.0
     rigidbody!.position = pos.phyVector3
-    rigidbody!.isSleepingEnabled = false
+    rigidbody!.isSleepingEnabled = true
     flixType = .bullet
     insertIntoDrawList()
   }
@@ -49,20 +49,8 @@ public class FlixBullet: FlixObject {
     }
   }
 
-  private func die() {
-    if isDying {
-      return
-    }
-    timeToLive = 0
-    isDying = true
-    removeFromDrawList()
-    owner.bulletDeathCallback()
-  }
-
-  override public func explode() {
-    if isDying {
-      return
-    }
-    die()
+  override public func explode(callbackData: Any? = nil) {
+    //callbackData as! Bool == true ? die(addPoints: true) : die()
+    owner.bulletDeathCallback(addPoints: false)
   }
 }

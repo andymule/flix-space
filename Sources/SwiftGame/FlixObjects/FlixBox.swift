@@ -4,20 +4,34 @@ import RaylibC
 import simd
 
 public class FlixBox: FlixObject {
-  // public static let staticModel: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))
+  public static let staticModel: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))
   public var size: Vector3 = .zero
 
-  // TODO restore size
+  // TODO restore size, use staticmodel?
   public init(
-    pos: Vector3, size size2: Vector3, color: Color, isStatic: Bool, flixType: FlixObjectType = .asteroid,
-    autoInsertIntoList: Bool = true
+    pos: Vector3, size: Vector3, color: Color, isStatic: Bool, flixType: FlixObjectType = .asteroid,
+    autoInsertIntoList: Bool = true, useStaticModel: Bool = false
   ) {
-    self.size = .one  // size
+    self.size = size
+    // self.size = .one
     super.init()
-    model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
+    self.isStaticInstanced = useStaticModel
+    if isStaticInstanced {
+      // self.model = FlixBox.staticModel
+    } else {
+      self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
+    }
+
+    for v: Int32 in 0..<model!.meshes[0].vertexCount {
+      if flixType == .asteroid && abs(model!.meshes[0].vertices[Int(v)]) != self.size.x / 2.0 {
+        print("v: \(v) \(model!.meshes[0].vertices[Int(v)])")
+        fatalError()
+      }
+    }
+    // model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: self.size.x, height: self.size.y, length: self.size.z)
-    let mass: Float = size.x + size.y + size.z
+    let mass: Float = self.size.x + self.size.y + self.size.z
     self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
     rigidbody!.restitution = 1.0
     rigidbody!.friction = 0.1
@@ -41,21 +55,24 @@ public class FlixBox: FlixObject {
     let pos: Vector3 = rigidbody!.position.vector3
     var (axis, angle) = rigidbody!.orientation.vector4.toAxisAngle()
     angle = angle * 180 / Float.pi
-    Raylib.drawModelEx(model!, pos, axis, angle, size, color)
-    if wireframe {
-      Raylib.drawModelWiresEx(model!, pos, axis, angle, size, wireframeColor)
+
+    if isStaticInstanced {
+      Raylib.drawModelEx(FlixBox.staticModel, pos, axis, angle, size, color)
+      if wireframe {
+        Raylib.drawModelWiresEx(FlixBox.staticModel, pos, axis, angle, size, wireframeColor)
+      }
+    } else {
+      Raylib.drawModelEx(model!, pos, axis, angle, .one, color)
+      if wireframe {
+        Raylib.drawModelWiresEx(model!, pos, axis, angle, .one, wireframeColor)
+      }
     }
   }
 
-  override public func explode() {
-    if isDying {
-      return
-    }
-    isDying = true
+  override public func explode(callbackData: Any? = nil) {
     if flixType == .asteroid {
       // FlixGame.score += 1
-      _ = FlixMeshExplosion(model: model!, startingBody: rigidbody!, color: color, size: size)
+      _ = FlixMeshExplosion(model: model ?? FlixBox.staticModel, startingBody: rigidbody!, color: color)
     }
-    removeFromDrawList()
   }
 }
