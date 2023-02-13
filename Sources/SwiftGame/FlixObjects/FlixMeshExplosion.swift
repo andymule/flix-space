@@ -5,11 +5,11 @@ import simd
 
 // takes existing Model or Mesh, explodes the triangles, removes from collsion, and fades out, then removes from draw/phys lists
 public class FlixMeshExplosion: FlixObject {
-  private let timeToFade: Float = 1.5
+  private let timeToFade: Float = 5.0  //1.5
   private var fadeTimer: Float = 0.0
   private var triangleList: [FlixTriangle] = []
 
-  init(model: Model, startingBody: PHYRigidBody, color: Color) {
+  init(model: Model, startingBody: PHYRigidBody, color: Color, collidingBody: PHYRigidBody? = nil) {
     super.init()
     fadeTimer = timeToFade
     self.color = color
@@ -19,7 +19,8 @@ public class FlixMeshExplosion: FlixObject {
 
     // boringCubes(model: model, startingVel: startingVel, centerPos: centerPos, color: color)
     for i: Int in 0..<Int(mesh.triangleCount) {
-      let flixTri: FlixTriangle = FlixTriangle(triangle: mesh.TriangleAtIndiceIndex(i), startingBody: startingBody, color: color)
+      let flixTri: FlixTriangle = FlixTriangle(
+        triangle: mesh.TriangleAtIndiceIndex(i), startingBody: startingBody, color: color, collidingBody: collidingBody)
       triangleList.append(flixTri)
     }
     flixType = FlixObjectType.explosionManager

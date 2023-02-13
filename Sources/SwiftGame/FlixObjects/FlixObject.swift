@@ -83,7 +83,7 @@ public class FlixObject: Equatable, Hashable {
     fatalError("Must Override")
   }
 
-  public func explode(callbackData: Any? = nil) {
+  public func explode(_ callbackData: CallBackData? = nil) {
     fatalError("Must Override")
   }
 
@@ -93,5 +93,15 @@ public class FlixObject: Equatable, Hashable {
     }
     isDying = true
     removeFromDrawList()
+  }
+}
+
+public struct CallBackData {
+  var data: Any?
+}
+
+public extension CallBackData {
+  func asBox() -> PHYRigidBody {
+    return self.data as! PHYRigidBody
   }
 }

@@ -18,7 +18,6 @@ class FlixGame {
   var ship: FlixShip
   private let camera: FlixCamera = FlixCamera()
 
-  // let wallDist: Float = 70.0
   private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
   public init() {
@@ -38,9 +37,9 @@ class FlixGame {
       color: .white,
       isStatic: false)
 
-    let borderDistance: Float = 4.0
+    let borderDistance: Float = 70.0
     makeWalls(borderDistance: borderDistance)
-    makeBoxes(20, borderDistance: borderDistance)
+    makeBoxes(300, borderDistance: borderDistance)
   }
 
   public func run() {
@@ -77,8 +76,8 @@ class FlixGame {
     for _ in 0..<count {
       let box: FlixBox = FlixBox(
         pos: Vector3(x: .random(in: -borderDistance...borderDistance), y: .random(in: -borderDistance...borderDistance), z: 0),
-        // size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
-        size: Vector3(0.2),
+        size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
+        // size: Vector3(0.2), // debug
         color: Color.brown,
         isStatic: false)  //, useStaticModel: true)
       box.rotation = .euler(Float.random(in: 0..<360), Float.random(in: 0..<360), Float.random(in: 0..<360), .degrees)

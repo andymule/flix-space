@@ -30,10 +30,10 @@ public class FlixBullet: FlixObject {
   }
 
   override public func handleDraw() {
+    timeToLive -= FlixGame.deltaTime
     if isDying {
       return
     }
-    timeToLive -= FlixGame.deltaTime
     if timeToLive <= 0 {
       die()
       return
@@ -50,7 +50,7 @@ public class FlixBullet: FlixObject {
     }
   }
 
-  override public func explode(callbackData: Any? = nil) {
+  override public func explode(_ callbackData: CallBackData? = nil) {
     if !isExploding {
       isExploding = true
       // FlixGame.score += 1

@@ -21,25 +21,27 @@ public class FlixBox: FlixObject {
       // self.model = FlixBox.staticModel
     } else {
       self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
-      let mesh: Mesh = model!.meshes[0]
-      print("veritces, triangles", mesh.vertexCount, mesh.triangleCount)
-      for i in 0..<model!.meshes[0].triangleCount.int {
-        // print all indices
-        print(i, mesh.indices[i * 3])
-        print(i, mesh.indices[i * 3 + 1])
-        print(i, mesh.indices[i * 3 + 2])
-        print(i, mesh.Vec3AtIndex(mesh.indices[i * 3]))
-        print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+1]))
-        print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+2]))
-      }
+      // let mesh: Mesh = model!.meshes[0]
+      // print("veritces, triangles", mesh.vertexCount, mesh.triangleCount)
+      // for i in 0..<model!.meshes[0].triangleCount.int {
+      //   // print all indices
+      //   print(i, mesh.indices[i * 3])
+      //   print(i, mesh.indices[i * 3 + 1])
+      //   print(i, mesh.indices[i * 3 + 2])
+      //   print(i, mesh.Vec3AtIndex(mesh.indices[i * 3]))
+      //   print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+1]))
+      //   print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+2]))
+      // }
     }
 
-    for v: Int32 in 0..<model!.meshes[0].vertexCount {
-      if flixType == .asteroid && abs(model!.meshes[0].vertices[Int(v)]) != self.size.x / 2.0 {
-        print("v: \(v) \(model!.meshes[0].vertices[Int(v)])")
-        fatalError()
-      }
-    }
+    
+    // for v: Int32 in 0..<model!.meshes[0].vertexCount {
+    //   let thisPoint = model!.meshes[0].vertices[Int(v)]
+    //   if flixType == .asteroid && !abs(thisPoint).isNearlyEqual(to: self.size.x / 2.0)  {
+    //     print("v: \(v) \(thisPoint) != \(self.size.x / 2.0)")
+    //     fatalError()
+    //   }
+    // }
 
     // model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
     self.color = color
@@ -82,7 +84,9 @@ public class FlixBox: FlixObject {
     }
   }
 
-  override public func explode(callbackData: Any? = nil) {
+
+
+  override public func explode(_ callbackData: CallBackData? = nil) {
     if flixType == .asteroid && !isExploding {
       isExploding = true
       // FlixGame.score += 1
@@ -91,7 +95,7 @@ public class FlixBox: FlixObject {
         print(x, model!.meshes[0].vertices[Int(x+1)])
         print(x, model!.meshes[0].vertices[Int(x+2)])
       }
-      _ = FlixMeshExplosion(model: model ?? FlixBox.staticModel, startingBody: rigidbody!, color: color)
+      _ = FlixMeshExplosion(model: model ?? FlixBox.staticModel, startingBody: rigidbody!, color: color, collidingBody: callbackData?.asBox() )
     }
   }
 }

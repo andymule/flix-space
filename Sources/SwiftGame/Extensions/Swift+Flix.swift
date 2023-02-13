@@ -16,14 +16,18 @@ extension Array where Element: Equatable {
   }
 }
 
-extension Int32 {
+extension FixedWidthInteger {
   public var int: Int { Int(self) }
 }
 
-extension Float {
-  // rad2deg
-  public var rad2deg: Float { self * 180 / .pi }
+extension FloatingPoint {
+    func isNearlyEqual(to value: Self) -> Bool {
+        return abs(self - value) <= .ulpOfOne
+    }
+
+    // rad2deg
+  public var rad2deg: Self { self * 180 / .pi }
 
   // deg2rad
-  public var deg2rad: Float { self * .pi / 180 }
+  public var deg2rad: Self { self * .pi / 180 }
 }
