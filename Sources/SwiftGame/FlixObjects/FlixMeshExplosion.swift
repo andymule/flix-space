@@ -19,23 +19,9 @@ public class FlixMeshExplosion: FlixObject {
 
     // boringCubes(model: model, startingVel: startingVel, centerPos: centerPos, color: color)
     for i: Int in 0..<Int(mesh.triangleCount) {
-      let newTriangle: Triangle = Triangle(
-        Vector3(
-          x: mesh.vertices[mesh.indexAt(i * 9)],
-          y: mesh.vertices[mesh.indexAt(i * 9 + 1)],
-          z: mesh.vertices[mesh.indexAt(i * 9 + 2)]),
-        Vector3(
-          x: mesh.vertices[mesh.indexAt(i * 9 + 3)],
-          y: mesh.vertices[mesh.indexAt(i * 9 + 4)],
-          z: mesh.vertices[mesh.indexAt(i * 9 + 5)]),
-        Vector3(
-          x: mesh.vertices[mesh.indexAt(i * 9 + 6)],
-          y: mesh.vertices[mesh.indexAt(i * 9 + 7)],
-          z: mesh.vertices[mesh.indexAt(i * 9 + 8)]))
-      let flixTri: FlixTriangle = FlixTriangle(triangle: newTriangle, startingBody: startingBody, color: color)
+      let flixTri: FlixTriangle = FlixTriangle(triangle: mesh.TriangleAtIndiceIndex(i), startingBody: startingBody, color: color)
       triangleList.append(flixTri)
     }
-    // print("vertices, triangles", mesh.vertexCount, mesh.triangleCount)
     flixType = FlixObjectType.explosionManager
     insertIntoDrawList()
   }

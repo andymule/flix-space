@@ -3,7 +3,7 @@ import Raylib
 import RaylibC
 import simd
 
-public class FlixObject: Equatable {
+public class FlixObject: Equatable, Hashable {
   public enum FlixObjectType {
     case ship
     case asteroid
@@ -20,8 +20,8 @@ public class FlixObject: Equatable {
   public var isStaticInstanced = false  // use a static model for all shared types
   public var isDying = false
 
-  public var model: Model?
-  public var rigidbody: PHYRigidBody?
+  public var model: Model? = nil
+  public var rigidbody: PHYRigidBody? = nil
 
   public var flixType: FlixObjectType = .uninit
   public var position: Vector3 {
@@ -53,6 +53,9 @@ public class FlixObject: Equatable {
   private func assignID() {
     _id = FlixGame.itemID
     FlixGame.itemID += 1
+  }
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(_id)
   }
 
   public func insertIntoDrawList() {

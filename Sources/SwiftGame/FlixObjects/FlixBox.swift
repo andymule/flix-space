@@ -6,6 +6,7 @@ import simd
 public class FlixBox: FlixObject {
   public static let staticModel: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))
   public var size: Vector3 = .zero
+  var isExploding: Bool = false
 
   // TODO restore size, use staticmodel?
   public init(
@@ -20,6 +21,17 @@ public class FlixBox: FlixObject {
       // self.model = FlixBox.staticModel
     } else {
       self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
+      let mesh: Mesh = model!.meshes[0]
+      print("veritces, triangles", mesh.vertexCount, mesh.triangleCount)
+      for i in 0..<model!.meshes[0].triangleCount.int {
+        // print all indices
+        print(i, mesh.indices[i * 3])
+        print(i, mesh.indices[i * 3 + 1])
+        print(i, mesh.indices[i * 3 + 2])
+        print(i, mesh.Vec3AtIndex(mesh.indices[i * 3]))
+        print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+1]))
+        print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+2]))
+      }
     }
 
     for v: Int32 in 0..<model!.meshes[0].vertexCount {
@@ -28,6 +40,7 @@ public class FlixBox: FlixObject {
         fatalError()
       }
     }
+
     // model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: self.size.x, height: self.size.y, length: self.size.z)
@@ -70,8 +83,14 @@ public class FlixBox: FlixObject {
   }
 
   override public func explode(callbackData: Any? = nil) {
-    if flixType == .asteroid {
+    if flixType == .asteroid && !isExploding {
+      isExploding = true
       // FlixGame.score += 1
+      for x in 0..<model!.meshes[0].vertexCount {
+        print(x, model!.meshes[0].vertices[Int(x)])
+        print(x, model!.meshes[0].vertices[Int(x+1)])
+        print(x, model!.meshes[0].vertices[Int(x+2)])
+      }
       _ = FlixMeshExplosion(model: model ?? FlixBox.staticModel, startingBody: rigidbody!, color: color)
     }
   }
