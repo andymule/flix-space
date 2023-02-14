@@ -8,46 +8,21 @@ public class FlixBox: FlixObject {
   public var size: Vector3 = .zero
   var isExploding: Bool = false
 
-  // TODO restore size, use staticmodel?
   public init(
     pos: Vector3, size: Vector3, color: Color, isStatic: Bool, flixType: FlixObjectType = .asteroid,
     autoInsertIntoList: Bool = true, useStaticModel: Bool = false
   ) {
     self.size = size
-    // self.size = .one
     super.init()
     self.isStaticInstanced = useStaticModel
-    if isStaticInstanced {
-      // self.model = FlixBox.staticModel
-    } else {
+    if !isStaticInstanced {
       self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
-      // let mesh: Mesh = model!.meshes[0]
-      // print("veritces, triangles", mesh.vertexCount, mesh.triangleCount)
-      // for i in 0..<model!.meshes[0].triangleCount.int {
-      //   // print all indices
-      //   print(i, mesh.indices[i * 3])
-      //   print(i, mesh.indices[i * 3 + 1])
-      //   print(i, mesh.indices[i * 3 + 2])
-      //   print(i, mesh.Vec3AtIndex(mesh.indices[i * 3]))
-      //   print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+1]))
-      //   print(i, mesh.Vec3AtIndex(mesh.indices[i * 3+2]))
-      // }
     }
-
-    // for v: Int32 in 0..<model!.meshes[0].vertexCount {
-    //   let thisPoint = model!.meshes[0].vertices[Int(v)]
-    //   if flixType == .asteroid && !abs(thisPoint).isNearlyEqual(to: self.size.x / 2.0)  {
-    //     print("v: \(v) \(thisPoint) != \(self.size.x / 2.0)")
-    //     fatalError()
-    //   }
-    // }
-
-    // model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
     self.color = color
     let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(width: self.size.x, height: self.size.y, length: self.size.z)
     let mass: Float = self.size.x + self.size.y + self.size.z
     self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
-    rigidbody!.restitution = 1.0
+    rigidbody!.restitution = 0.75
     rigidbody!.friction = 0.1
     rigidbody!.linearDamping = 0.0
     rigidbody!.angularDamping = 0.0
@@ -86,20 +61,13 @@ public class FlixBox: FlixObject {
   override public func explode(_ callbackData: FlixCallBackData? = nil) {
     if flixType == .asteroid && !isExploding {
       isExploding = true
-      // FlixGame.score += 1
-      // for x in 0..<model!.meshes[0].vertexCount {
-      //   print(x, model!.meshes[0].vertices[Int(x)])
-      //   print(x, model!.meshes[0].vertices[Int(x + 1)])
-      //   print(x, model!.meshes[0].vertices[Int(x + 2)])
-      // }
-      // let thisType: NSObject.Type = self.callbackDataFormat[0] as  self.callbackDataFormat[0]
+      if isStaticInstanced {
+        // generate a temp instance for explosion and allows for proper mem free on it later with FlixObject destructors
+        self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
+      }
       _ = FlixMeshExplosion(
-        mesh: model?.meshes[0] ?? Raylib.genMeshCube(self.size.x, self.size.y, self.size.z), startingBody: rigidbody!, color: color)
-      // ,collidingBody: ((callbackData!.data[0]) as! (self.callbackDataFormat[0]!)))
+        mesh: model!.meshes[0], startingBody: rigidbody!,
+        color: color, collidingBody: callbackData!.cb_rigidbodies[0])
     }
   }
-
-  // override public func initCallbackDataFormat() {
-  // callbackDataFormat.append(PHYRigidBody.self)
-  // }
 }

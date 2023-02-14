@@ -64,7 +64,6 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     rigidbody!.angularDamping = 0.0
     rigidbody!.position = pos.phyVector3
     rigidbody!.isSleepingEnabled = false
-    // rigidbody.inter
     flixType = .ship
     insertIntoDrawList()
     insertIntoInputList()

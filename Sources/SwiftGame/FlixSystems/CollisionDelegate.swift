@@ -40,11 +40,11 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
     let flixObjB: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyB!]!
     if flixObjA.flixType == .bullet && flixObjB.flixType == .asteroid {
       flixObjA.explode()
-      flixObjB.explode(FlixCallBackData(ints: [1], floats: [1.0], flixObjs: [flixObjA]))
+      flixObjB.explode(FlixCallBackData(rigidbodies: [flixObjA.rigidbody]))
       markedForRemoval.insert(flixObjA)
       markedForRemoval.insert(flixObjB)
     } else if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
-      flixObjA.explode(FlixCallBackData(ints: [1], floats: [1.0], flixObjs: [flixObjA]))
+      flixObjA.explode(FlixCallBackData(rigidbodies: [flixObjB.rigidbody]))
       flixObjB.explode()
       markedForRemoval.insert(flixObjA)
       markedForRemoval.insert(flixObjB)

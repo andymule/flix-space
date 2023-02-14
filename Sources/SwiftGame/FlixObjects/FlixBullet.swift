@@ -4,7 +4,7 @@ import RaylibC
 import simd
 
 public class FlixBullet: FlixObject {
-  
+
   private var timeToLive: Float = 15.0
   let owner: FlixCanShoot
   var isExploding: Bool = false
@@ -54,14 +54,9 @@ public class FlixBullet: FlixObject {
   override public func explode(_ callbackData: FlixCallBackData? = nil) {
     if !isExploding {
       isExploding = true
-      // FlixGame.score += 1
     }
     //callbackData as! Bool == true ? die(addPoints: true) : die()
     owner.bulletDeathCallback(addPoints: false)
     // let b = callbackData?.data[0] as! Int == 32
   }
-
-  // override public func initCallbackDataFormat() {
-  // callbackDataFormat.append(PHYRigidBody.self)
-  // }
 }

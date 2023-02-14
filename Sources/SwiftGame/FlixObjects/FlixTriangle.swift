@@ -23,8 +23,6 @@ public class FlixTriangle: FlixObject {
     rigidbody!.angularVelocity = startingBody.angularVelocity.vector3.scale(.random(in: -1.0...1.0)).phyVector3
     rigidbody!.isSleepingEnabled = false
     self.flixType = .triangle
-    // wireframe = true
-    // wireframeColor = .black
     insertIntoDrawList()
   }
 
