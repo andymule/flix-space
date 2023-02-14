@@ -9,19 +9,19 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
   func physicsWorld(
     _ physicsWorld: PhyKit.PHYWorld, triggerDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
   ) {
-    print(collisionPair.rigidBody.className, collisionPair.trigger.className)
+    // print(collisionPair.rigidBody.className, collisionPair.trigger.className)
   }
 
   func physicsWorld(
     _ physicsWorld: PhyKit.PHYWorld, triggerDidContinueAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
   ) {
-    print(collisionPair.rigidBody.className, collisionPair.trigger.className)
+    // print(collisionPair.rigidBody.className, collisionPair.trigger.className)
   }
 
   func physicsWorld(
     _ physicsWorld: PhyKit.PHYWorld, triggerDidEndAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
   ) {
-    print(collisionPair.rigidBody.className, collisionPair.trigger.className)
+    // print(collisionPair.rigidBody.className, collisionPair.trigger.className)
   }
 
   func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, willSimulateAtTime time: TimeInterval) {
@@ -30,6 +30,7 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
 
   func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, didSimulateAtTime time: TimeInterval) {
     // print("callback2")
+    resolveRemovals()
   }
 
   func physicsWorld(
@@ -39,11 +40,11 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
     let flixObjB: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyB!]!
     if flixObjA.flixType == .bullet && flixObjB.flixType == .asteroid {
       flixObjA.explode()
-      flixObjB.explode(CallBackData(data: flixObjA.rigidbody))
+      flixObjB.explode(FlixCallBackData(ints: [1], floats: [1.0], flixObjs: [flixObjA]))
       markedForRemoval.insert(flixObjA)
       markedForRemoval.insert(flixObjB)
     } else if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
-      flixObjA.explode(CallBackData(data: flixObjA.rigidbody))
+      flixObjA.explode(FlixCallBackData(ints: [1], floats: [1.0], flixObjs: [flixObjA]))
       flixObjB.explode()
       markedForRemoval.insert(flixObjA)
       markedForRemoval.insert(flixObjB)

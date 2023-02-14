@@ -34,7 +34,6 @@ public class FlixBox: FlixObject {
       // }
     }
 
-    
     // for v: Int32 in 0..<model!.meshes[0].vertexCount {
     //   let thisPoint = model!.meshes[0].vertices[Int(v)]
     //   if flixType == .asteroid && !abs(thisPoint).isNearlyEqual(to: self.size.x / 2.0)  {
@@ -84,18 +83,23 @@ public class FlixBox: FlixObject {
     }
   }
 
-
-
-  override public func explode(_ callbackData: CallBackData? = nil) {
+  override public func explode(_ callbackData: FlixCallBackData? = nil) {
     if flixType == .asteroid && !isExploding {
       isExploding = true
       // FlixGame.score += 1
-      for x in 0..<model!.meshes[0].vertexCount {
-        print(x, model!.meshes[0].vertices[Int(x)])
-        print(x, model!.meshes[0].vertices[Int(x+1)])
-        print(x, model!.meshes[0].vertices[Int(x+2)])
-      }
-      _ = FlixMeshExplosion(model: model ?? FlixBox.staticModel, startingBody: rigidbody!, color: color, collidingBody: callbackData?.asBox() )
+      // for x in 0..<model!.meshes[0].vertexCount {
+      //   print(x, model!.meshes[0].vertices[Int(x)])
+      //   print(x, model!.meshes[0].vertices[Int(x + 1)])
+      //   print(x, model!.meshes[0].vertices[Int(x + 2)])
+      // }
+      // let thisType: NSObject.Type = self.callbackDataFormat[0] as  self.callbackDataFormat[0]
+      _ = FlixMeshExplosion(
+        mesh: model?.meshes[0] ?? Raylib.genMeshCube(self.size.x, self.size.y, self.size.z), startingBody: rigidbody!, color: color)
+      // ,collidingBody: ((callbackData!.data[0]) as! (self.callbackDataFormat[0]!)))
     }
   }
+
+  // override public func initCallbackDataFormat() {
+  // callbackDataFormat.append(PHYRigidBody.self)
+  // }
 }

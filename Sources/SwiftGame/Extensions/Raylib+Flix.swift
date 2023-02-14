@@ -62,7 +62,7 @@ extension Raylib {
       mesh.indices[t * 6 + 3] = UInt16(t * 3 + 2)
       mesh.indices[t * 6 + 4] = UInt16(t * 3 + 1)
       mesh.indices[t * 6 + 5] = UInt16(t * 3)
-      print(triangle)
+      // print(triangle)
     }
 
     Raylib.uploadMesh(&mesh, true)  // manage VRAM better?

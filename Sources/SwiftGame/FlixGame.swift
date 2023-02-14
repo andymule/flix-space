@@ -21,13 +21,13 @@ class FlixGame {
   private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
   public init() {
-    let screenWidth: Int32 = 800
-    let screenHeight: Int32 = 450
+    let screenWidth: Int32 = 1400
+    let screenHeight: Int32 = 900
 
     Raylib.setConfigFlags(.msaa4xHint | .vsyncHint)
     Raylib.setTraceLogLevel(.error)
     Raylib.initWindow(screenWidth, screenHeight, "FlixGame")
-    Raylib.setTargetFPS(90)
+    Raylib.setTargetFPS(120)
 
     FlixGame.physicsWorld.gravity = PHYVector3(x: 0, y: 0, z: 0)  // y = -9.8
 
@@ -37,9 +37,9 @@ class FlixGame {
       color: .white,
       isStatic: false)
 
-    let borderDistance: Float = 70.0
+    let borderDistance: Float = 700.0
     makeWalls(borderDistance: borderDistance)
-    makeBoxes(300, borderDistance: borderDistance)
+    makeBoxes(2000, borderDistance: borderDistance)
   }
 
   public func run() {
@@ -54,7 +54,7 @@ class FlixGame {
       FlixGame.deltaTime = Raylib.getFrameTime()
       FlixGame.time = Raylib.getTime()
       FlixGame.physicsWorld.simulationTime = FlixGame.time
-      (FlixGame.physicsWorld.collisionDelegate as! CollisionDelegate).resolveRemovals()
+      // (FlixGame.physicsWorld.collisionDelegate as! CollisionDelegate).resolveRemovals() // resolved in simulation ended delegate, hopefully
       camera.update(ship: ship)
 
       draw()
@@ -79,7 +79,7 @@ class FlixGame {
         size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
         // size: Vector3(0.2), // debug
         color: Color.brown,
-        isStatic: false)  //, useStaticModel: true)
+        isStatic: false, useStaticModel: true)
       box.rotation = .euler(Float.random(in: 0..<360), Float.random(in: 0..<360), Float.random(in: 0..<360), .degrees)
       box.rigidbody!.angularVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), Float.random(in: -2..<2))
       box.rigidbody!.linearVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), 0)
@@ -87,29 +87,29 @@ class FlixGame {
   }
 
   func makeWalls(borderDistance: Float) {
-    let wallWidth: Float = 2.0
+    let wallWidth: Float = 200.0
     _ = FlixBox(
       pos: Vector3(x: -borderDistance - wallWidth * 2, y: 0, z: 0),
-      size: Vector3(x: wallWidth, y: 1000, z: 0.2),
+      size: Vector3(x: wallWidth, y: 10000, z: 0.2),
       color: .rayWhite,
       isStatic: true,
       flixType: .wall
     )
     _ = FlixBox(
       pos: Vector3(x: borderDistance + wallWidth * 2, y: 0, z: 0),
-      size: Vector3(x: wallWidth, y: 1000, z: 0.2),
+      size: Vector3(x: wallWidth, y: 10000, z: 0.2),
       color: .rayWhite,
       isStatic: true,
       flixType: .wall)
     _ = FlixBox(
       pos: Vector3(x: 0, y: borderDistance + wallWidth * 2, z: 0),
-      size: Vector3(x: 1000, y: wallWidth, z: 0.2),
+      size: Vector3(x: 10000, y: wallWidth, z: 0.2),
       color: .rayWhite,
       isStatic: true,
       flixType: .wall)
     _ = FlixBox(
       pos: Vector3(x: 0, y: -borderDistance - wallWidth * 2, z: 0),
-      size: Vector3(x: 1000, y: wallWidth, z: 0.2),
+      size: Vector3(x: 10000, y: wallWidth, z: 0.2),
       color: .rayWhite,
       isStatic: true,
       flixType: .wall)

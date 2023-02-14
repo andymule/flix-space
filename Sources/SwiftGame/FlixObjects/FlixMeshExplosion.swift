@@ -9,13 +9,13 @@ public class FlixMeshExplosion: FlixObject {
   private var fadeTimer: Float = 0.0
   private var triangleList: [FlixTriangle] = []
 
-  init(model: Model, startingBody: PHYRigidBody, color: Color, collidingBody: PHYRigidBody? = nil) {
+  init(mesh: Mesh, startingBody: PHYRigidBody, color: Color, collidingBody: PHYRigidBody? = nil) {
     super.init()
     fadeTimer = timeToFade
     self.color = color
     self.rigidbody?.isCollisionEnabled = false
 
-    let mesh: Mesh = model.meshes[0]
+    // let mesh: Mesh = model.meshes[0]
 
     // boringCubes(model: model, startingVel: startingVel, centerPos: centerPos, color: color)
     for i: Int in 0..<Int(mesh.triangleCount) {

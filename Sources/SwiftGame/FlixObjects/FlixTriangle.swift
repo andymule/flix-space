@@ -20,7 +20,7 @@ public class FlixTriangle: FlixObject {
     rigidbody!.linearVelocity =
       startingBody.linearVelocity.vector3.scale(0.5).phyVector3
       + (collidingBody?.linearVelocity.vector3.scale(.random(in: 0.2...0.5)).phyVector3 ?? PHYVector3(0, 0, 0))
-    rigidbody!.angularVelocity = startingBody.angularVelocity.vector3.scale(0.3).phyVector3
+    rigidbody!.angularVelocity = startingBody.angularVelocity.vector3.scale(.random(in: -1.0...1.0)).phyVector3
     rigidbody!.isSleepingEnabled = false
     self.flixType = .triangle
     // wireframe = true

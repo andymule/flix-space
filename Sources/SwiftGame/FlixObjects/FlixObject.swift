@@ -4,19 +4,7 @@ import RaylibC
 import simd
 
 public class FlixObject: Equatable, Hashable {
-  public enum FlixObjectType {
-    case ship
-    case asteroid
-    case bullet
-    case explosion
-    case explosionManager
-    case camera
-    case wall
-    case triangle
-    case uninit
-    case other
-  }
-
+  // TODO remove for all objects or implement for al objects?
   public var isStaticInstanced = false  // use a static model for all shared types
   public var isDying = false
 
@@ -45,7 +33,7 @@ public class FlixObject: Equatable, Hashable {
   public var wireframe: Bool = false
   public var wireframeColor: Color = .white
 
-  // make equateable for better array handling
+  // make equateable for better array/set handling
   public var _id: Int = 0
   public static func == (lhs: FlixObject, rhs: FlixObject) -> Bool {
     lhs._id == rhs._id
@@ -64,6 +52,7 @@ public class FlixObject: Equatable, Hashable {
       fatalError("Must declare flixType before inserting into draw list")
     }
     FlixGame.drawList.append(self)
+    // initCallbackDataFormat()
     guard let rigidbody = rigidbody else { return }
     FlixGame.physicsWorld.add(rigidbody)
     FlixGame.rigidbodyToFlixObject[rigidbody] = self
@@ -83,9 +72,14 @@ public class FlixObject: Equatable, Hashable {
     fatalError("Must Override")
   }
 
-  public func explode(_ callbackData: CallBackData? = nil) {
+  public func explode(_ callbackData: FlixCallBackData? = nil) {
     fatalError("Must Override")
   }
+
+  // public var callbackDataFormat: [AnyClass] = .init()
+  // public func initCallbackDataFormat() {
+    // fatalError("Must Override. Describes structure of callbackData by filling callbackDataFormat with types at indices")
+  // }
 
   func die() {
     if isDying {
@@ -93,15 +87,5 @@ public class FlixObject: Equatable, Hashable {
     }
     isDying = true
     removeFromDrawList()
-  }
-}
-
-public struct CallBackData {
-  var data: Any?
-}
-
-public extension CallBackData {
-  func asBox() -> PHYRigidBody {
-    return self.data as! PHYRigidBody
   }
 }
