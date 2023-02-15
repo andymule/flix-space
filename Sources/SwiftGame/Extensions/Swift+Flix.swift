@@ -25,9 +25,19 @@ extension FloatingPoint {
         return abs(self - value) <= .ulpOfOne
     }
 
+    func roundedTenths() -> Self {
+        (self * 10).rounded() / 10
+    }
+
     // rad2deg
   public var rad2deg: Self { self * 180 / .pi }
 
   // deg2rad
   public var deg2rad: Self { self * .pi / 180 }
+}
+
+public extension Float { 
+  func roundedTenths() -> Self {
+        (self * 10).rounded() / 10
+    }
 }

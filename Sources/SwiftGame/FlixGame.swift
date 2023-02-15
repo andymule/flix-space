@@ -1,3 +1,4 @@
+import Measure
 import PhyKit
 import Raylib
 import RaylibC
@@ -25,6 +26,7 @@ class FlixGame {
   private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
   public init() {
+    Measure.start("init")
     Raylib.setConfigFlags(.msaa4xHint | .vsyncHint)
     Raylib.setTraceLogLevel(.warning)
     Raylib.initWindow(Self.screenWidth, Self.screenHeight, "FlixGame")
@@ -42,6 +44,7 @@ class FlixGame {
     makeWalls(borderDistance: borderDistance)
     makePlanet(radius: 13, pos: Vector3(x: 18, y: 18, z: 0))
     makeBoxes(750, borderDistance: borderDistance)
+    Measure.finish("init")
   }
 
   public func run() {
@@ -55,10 +58,14 @@ class FlixGame {
       // update time
       FlixGame.deltaTime = Raylib.getFrameTime()
       FlixGame.time = Raylib.getTime()
+      // Measure.start("phy")
       FlixGame.physicsWorld.simulationTime = FlixGame.time
+      // Measure.finish("phy")
       // (FlixGame.physicsWorld.collisionDelegate as! CollisionDelegate).resolveRemovals() // resolved in simulation ended delegate, hopefully // TODONcheck
       camera.update(ship: ship)
+      // Measure.start("draw")
       draw()
+      // Measure.finish("draw")
     }
     Raylib.closeWindow()
   }
@@ -66,11 +73,11 @@ class FlixGame {
   func draw() {
     Raylib.beginDrawing()
     Raylib.clearBackground(.black)
-    HUD.draw()
     Raylib.beginMode3D(camera.camera)
     FlixGame.drawList.forEach { $0.handleDraw() }
     Raylib.endMode3D()
     Raylib.drawFPS(10, Self.screenHeight - 30)
+    HUD.draw()
     Raylib.endDrawing()
   }
 
