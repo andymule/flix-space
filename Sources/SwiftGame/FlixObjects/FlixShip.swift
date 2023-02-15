@@ -54,11 +54,10 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     boostModel = Raylib.loadModelFromMesh(Raylib.GenMeshFromTriangleArray([boostTriangle]))
     brakeModel = Raylib.loadModelFromMesh(Raylib.GenMeshFromTriangleArray(brakeTriangles))
     super.init()
-    model = Raylib.loadModel("Resources/ship.gltf")
+    model = Raylib.loadModel(Bundle.module.path(forResource: "ship", ofType: "gltf")!)  //Raylib.loadModel("Resources/ship.gltf")
     self.color = color
     self.rigidbody = PHYRigidBodyFromRaylibModel(
       model: model!, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
-
     rigidbody!.restitution = 0.3  //m_collisionFlags
     rigidbody!.friction = 0.1
     rigidbody!.linearDamping = 0.0

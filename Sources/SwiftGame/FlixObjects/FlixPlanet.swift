@@ -13,7 +13,7 @@ public class FlixPlanet: FlixObject {
     public init(position: Vector3, radius: Float, color: Color, flixType: FlixObjectType) { //mass?
         self.radius = radius
         self.radiusInfluence = radius * 4
-        texture = LoadTexture("Resources/planets/Icy.png")
+        texture = LoadTexture(Bundle.module.path(forResource: "Icy", ofType: "png")! ) //"Resources/planets/Icy.png"
         let shape = Raylib.genMeshSphere(radius, 32, 32)
         let shapeBigger = Raylib.genMeshSphere(radiusInfluence, 6, 32)
         modelWire = Raylib.loadModelFromMesh(shapeBigger)
