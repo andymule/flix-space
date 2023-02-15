@@ -18,6 +18,7 @@ class FlixGame {
   static var time: Double = 0
   static let screenWidth: Int32 = 1400
   static let screenHeight: Int32 = 800
+  static let aspectRatio: Float = Float(screenWidth) / Float(screenHeight)
   let HUD: FlixHUD
 
   var ship: FlixShip

@@ -59,7 +59,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     self.rigidbody = PHYRigidBodyFromRaylibModel(
       model: model!, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
     rigidbody!.restitution = 0.3  //m_collisionFlags
-    rigidbody!.friction = 0.1
+    rigidbody!.friction = 1.0
     rigidbody!.linearDamping = 0.0
     rigidbody!.angularDamping = 0.0
     rigidbody!.position = pos.phyVector3

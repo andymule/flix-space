@@ -5,10 +5,12 @@ import simd
 
 class FlixHUD {
   let myShip: FlixShip
-  let font: Font = LoadFont(Bundle.module.path(forResource: "meslo", ofType: "ttf")!)
+
+  //whoops fail on purpose to use default font for now // LoadFont(Bundle.module.path(forResource: "meslo", ofType: "ttf")!)
+  let font: Font = LoadFont("") 
 
   init(ship: FlixShip) {
-    Raylib.guiSetFont(font)
+    // Raylib.guiSetFont(font)
     myShip = ship
   }
 

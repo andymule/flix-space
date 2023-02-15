@@ -33,7 +33,7 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
             (o as! FlixShip).isInfluencedCurrently = true
           }
           let force: Vector3 = (p.position - o.position) / (dist * dist)
-          o.rigidbody?.applyForce(force.phyVector3, impulse: false)
+          o.rigidbody?.applyForce(force.scale(6).phyVector3, impulse: false)
         }
       }
     }

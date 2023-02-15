@@ -60,6 +60,9 @@ public class FlixPlanet: FlixObject {
 
   public func handleDraw2D() {
     let dpos: Vector2 = GetWorldToScreen(rigidbody!.position.vector3, FlixGame.cameras.camera3D)
-    Raylib.drawRectangle(Int32(dpos.x), Int32(dpos.y),  30, 45, .pink)
+    // let dsize = GetWorldToScreenEx(rigidbody!.position.vector3, FlixGame.cameras.camera3D, Int32(radius), Int32(radius))
+    // let size2 = GetWorldToScreenEx(rigidbody!.position.vector3, FlixGame.cameras.camera3D, FlixGame.screenWidth / Int32(radius), FlixGame.screenHeight / Int32(radius))
+    // Raylib.drawRectangle(Int32(dpos.x), Int32(dpos.y),  30, 45, .pink)
+      Raylib.drawCircleV(dpos, Float(FlixGame.screenWidth) / FlixGame.cameras.camera3D.fovy * radius / FlixGame.aspectRatio, Color(r: 255, g: 0, b: 255, a: 50))
   }
 }

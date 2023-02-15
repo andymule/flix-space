@@ -6,13 +6,13 @@ import simd
 public class FlixCamera: FlixInput {
   public func handleInput() {
     if Raylib.isKeyDown(.number1) {
-      camera3D.fovy = 45
+      camera3D.fovy = 40
     }
     if Raylib.isKeyDown(.number2) {
       camera3D.fovy = 65
     }
     if Raylib.isKeyDown(.number3) {
-      camera3D.fovy = 85
+      camera3D.fovy = 100
     }
   }
 
