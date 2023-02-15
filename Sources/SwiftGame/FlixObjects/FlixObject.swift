@@ -4,7 +4,7 @@ import RaylibC
 import simd
 
 public class FlixObject: Equatable, Hashable {
-  // TODO remove for all objects or implement for al objects?
+  // TODO remove isStaticInstanced for all objects or implement for al objects?
   public var isStaticInstanced = false  // use a static model for all shared types
   public var isDying = false
 
@@ -58,7 +58,8 @@ public class FlixObject: Equatable, Hashable {
     FlixGame.rigidbodyToFlixObject[rigidbody] = self
   }
 
-  public func removeFromDrawList() {
+  // call from children via die()
+  private func removeFromDrawList() {
     FlixGame.drawList.removeFirstEqualItem(self)
     if !isStaticInstanced && model != nil {
       Raylib.unloadModel(model!)
@@ -75,11 +76,6 @@ public class FlixObject: Equatable, Hashable {
   public func explode(_ callbackData: FlixCallBackData? = nil) {
     fatalError("Must Override")
   }
-
-  // public var callbackDataFormat: [AnyClass] = .init()
-  // public func initCallbackDataFormat() {
-    // fatalError("Must Override. Describes structure of callbackData by filling callbackDataFormat with types at indices")
-  // }
 
   func die() {
     if isDying {

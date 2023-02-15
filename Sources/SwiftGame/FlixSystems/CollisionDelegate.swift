@@ -26,33 +26,25 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
 
   func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, willSimulateAtTime time: TimeInterval) {
     for p in FlixGame.planetList {
-      for o in FlixGame.drawList {
-        if o.flixType == .asteroid || o.flixType == .bullet || o.flixType == .ship {
-          let dist = p.position.distance(o.position)
-          if dist < p.radiusInfluence {
-            if o.flixType == .ship {
-              (o as! FlixShip).isInfluencedCurrently = true
-            }
-            // impart gravity
-            let force: Vector3 = (p.position - o.position) / (dist * dist)
-            // let force = (p.pos - o.pos) / dist * 0.1
-            o.rigidbody?.applyForce(force.phyVector3, impulse: false)
+      for o in FlixGame.drawList where (o.flixType == .asteroid || o.flixType == .bullet || o.flixType == .ship) {
+        let dist = p.position.distance(o.position)
+        if dist < p.radiusInfluence {
+          if o.flixType == .ship {
+            (o as! FlixShip).isInfluencedCurrently = true
           }
+          let force: Vector3 = (p.position - o.position) / (dist * dist)
+          o.rigidbody?.applyForce(force.phyVector3, impulse: false)
         }
       }
     }
-    // print("callback1")
   }
 
-  func resolveRemovals() {
-    for flixObj in markedForRemoval {
-      flixObj.die()
-    }
+  private func resolveRemovals() {
+    markedForRemoval.forEach { $0.die() }  // might be redudant but die() checks for that
     markedForRemoval.removeAll()
   }
 
   func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, didSimulateAtTime time: TimeInterval) {
-    // print("callback2")
     resolveRemovals()
   }
 
@@ -84,17 +76,12 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
     _ physicsWorld: PhyKit.PHYWorld, collisionDidContinueAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair
   ) {
     //  TODO can I remove this?
-    
+
   }
 
   func physicsWorld(
     _ physicsWorld: PhyKit.PHYWorld, collisionDidEndAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair
   ) {
     //  print(collisionPair.rigidBodyA!.className, collisionPair.rigidBodyB!.className)
-    
   }
-  //    if collision.nodeA.name == "player" && collision.nodeB.name == "enemy" {
 }
-
-// make the collision layers
-// let layer1: PHYCollisionLayer = PHYCollisionLayer(name: "layer1")

@@ -29,6 +29,7 @@ class FlixGame {
     Raylib.setTraceLogLevel(.warning)
     Raylib.initWindow(Self.screenWidth, Self.screenHeight, "FlixGame")
     Raylib.setTargetFPS(120)
+
     FlixGame.physicsWorld.gravity = PHYVector3(x: 0, y: 0, z: 0)  // y = -9.8
 
     ship = FlixShip(
@@ -92,7 +93,7 @@ class FlixGame {
         color: Color.brown,
         isStatic: false, autoInsertIntoList: false, useStaticModel: true)
       for p: FlixPlanet in Self.planetList {
-        while box.position.distance(p.position) < p.radius + max(box.size.x, box.size.y, box.size.z)  {
+        while box.position.distance(p.position) < p.radius + max(box.size.x, box.size.y, box.size.z) {
           box = FlixBox(
             pos: Vector3(
               x: .random(in: -borderDistance...borderDistance), y: .random(in: -borderDistance...borderDistance), z: 0),

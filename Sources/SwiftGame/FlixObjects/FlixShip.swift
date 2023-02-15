@@ -6,10 +6,10 @@ import simd
 public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
   private let bulletsMAX = 9999  //10
   private var bulletsActiveCount = 0
-  private let recoilScale: Float = 0 //-0.2
+  private let recoilScale: Float = 0  //-0.2
   private let accel: Float = 3.0
 
-  private let firingCooldown: Float = 0.0 //0.1
+  private let firingCooldown: Float = 0.0  //0.1
   private var firingCooldownTimer: Float = 0.0
   public var isInfluencedCurrently: Bool = false
 
@@ -97,18 +97,18 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
     isBoosting = false
     isBraking = false
     if Raylib.isKeyDown(.right) {
-      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: -accel*FlixGame.deltaTime)
+      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: -accel * FlixGame.deltaTime)
     }
     if Raylib.isKeyDown(.left) {
-      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: accel*FlixGame.deltaTime)
+      rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: accel * FlixGame.deltaTime)
     }
     if Raylib.isKeyDown(.up) {
       isBoosting = true
-      rigidbody!.linearVelocity += forward.scale(accel*FlixGame.deltaTime).phyVector3
+      rigidbody!.linearVelocity += forward.scale(accel * FlixGame.deltaTime).phyVector3
     }
     if Raylib.isKeyDown(.down) {
       isBraking = true
-      rigidbody!.linearVelocity += forward.scale(-accel*FlixGame.deltaTime).phyVector3
+      rigidbody!.linearVelocity += forward.scale(-accel * FlixGame.deltaTime).phyVector3
     }
     firingCooldownTimer -= FlixGame.deltaTime
     if Raylib.isKeyDown(.space) {

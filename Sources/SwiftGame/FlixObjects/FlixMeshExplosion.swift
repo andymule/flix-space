@@ -27,16 +27,13 @@ public class FlixMeshExplosion: FlixObject {
   override public func handleDraw() {
     fadeTimer -= FlixGame.deltaTime
     if fadeTimer <= 0 {
-      removeFromDrawList()
-      for tri in triangleList {
-        tri.removeFromDrawList()
-      }
+      die()
+      triangleList.forEach({ $0.die() })
       return
     } else {
-      let fade: Float = fadeTimer / timeToFade
-      for tri in triangleList {
-        tri.color = Color(r: color.r, g: color.g, b: color.b, a: UInt8(Float(color.a) * fade))
-      }
+      triangleList.forEach({
+        $0.color = Color(r: color.r, g: color.g, b: color.b, a: UInt8(Float(color.a) * (fadeTimer / timeToFade)))
+      })
     }
   }
 }
