@@ -71,6 +71,21 @@ extension Vector3 {
       z: Float.random(in: range)
     )
   }
+  public var roundedTenths: Vector3 {
+    Vector3(
+      x: round(x * 10) / 10,
+      y: round(y * 10) / 10,
+      z: round(z * 10) / 10
+    )
+  }
+
+  public var rounded: Vector3 {
+    Vector3(
+      x: round(x),
+      y: round(y),
+      z: round(z)
+    )
+  }
 
   static func / (lhs: Vector3, rhs: Vector3) -> Vector3 {
     Vector3(x: lhs.x / rhs.x, y: lhs.y / rhs.y, z: lhs.z / rhs.z)

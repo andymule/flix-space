@@ -5,7 +5,7 @@ import simd
 
 public class FlixBullet: FlixObject {
 
-  private var timeToLive: Float = 15.0
+  private var timeToLive: Float = 1.5
   let owner: FlixCanShoot
   var isExploding: Bool = false
 
@@ -25,7 +25,7 @@ public class FlixBullet: FlixObject {
     rigidbody!.linearDamping = 0.0
     rigidbody!.angularDamping = 0.0
     rigidbody!.position = pos.phyVector3
-    rigidbody!.isSleepingEnabled = true
+    rigidbody!.isSleepingEnabled = false
     flixType = .bullet
     insertIntoDrawList()
   }

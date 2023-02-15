@@ -67,7 +67,7 @@ public class FlixBox: FlixObject {
       }
       _ = FlixMeshExplosion(
         mesh: model!.meshes[0], startingBody: rigidbody!,
-        color: color, collidingBody: callbackData!.cb_rigidbodies[0])
+        color: color, collidingBody: callbackData?.cb_rigidbodies[0])
     }
   }
 }

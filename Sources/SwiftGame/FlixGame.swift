@@ -9,11 +9,15 @@ class FlixGame {
   static let physicsWorld: PHYWorld = PHYWorld()
   static var rigidbodyToFlixObject: [PHYRigidBody: FlixObject] = .init()  // used to trace back collisions to objects
   static var drawList: [FlixObject] = .init()
+  static var planetList: [FlixPlanet] = .init()
   static var inputList: [FlixInput] = .init()
 
   static var itemID: Int = 0  // used to assign unique IDs to objects
   static var deltaTime: Float = 0
   static var time: Double = 0
+  static let screenWidth: Int32 = 1400
+  static let screenHeight: Int32 = 800
+  let HUD: FlixHUD
 
   var ship: FlixShip
   private let camera: FlixCamera = FlixCamera()
@@ -21,25 +25,22 @@ class FlixGame {
   private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
   public init() {
-    let screenWidth: Int32 = 1400
-    let screenHeight: Int32 = 900
-
     Raylib.setConfigFlags(.msaa4xHint | .vsyncHint)
-    Raylib.setTraceLogLevel(.error)
-    Raylib.initWindow(screenWidth, screenHeight, "FlixGame")
+    Raylib.setTraceLogLevel(.warning)
+    Raylib.initWindow(Self.screenWidth, Self.screenHeight, "FlixGame")
     Raylib.setTargetFPS(120)
-
     FlixGame.physicsWorld.gravity = PHYVector3(x: 0, y: 0, z: 0)  // y = -9.8
 
     ship = FlixShip(
       pos: Vector3(x: 0, y: 0, z: 0),
-      scale: 0.2,
+      scale: 0.3,
       color: .white,
       isStatic: false)
-
-    let borderDistance: Float = 700.0
+    HUD = FlixHUD(ship: ship)
+    let borderDistance: Float = 30.0
     makeWalls(borderDistance: borderDistance)
-    makeBoxes(2000, borderDistance: borderDistance)
+    makePlanet(radius: 13, pos: Vector3(x: 18, y: 18, z: 0))
+    makeBoxes(750, borderDistance: borderDistance)
   }
 
   public func run() {
@@ -48,15 +49,14 @@ class FlixGame {
     FlixGame.physicsWorld.simulationDelegate = collisionDelegate
 
     while Raylib.windowShouldClose == false {
+      ship.isInfluencedCurrently = false
       FlixGame.inputList.forEach { $0.handleInput() }
-
       // update time
       FlixGame.deltaTime = Raylib.getFrameTime()
       FlixGame.time = Raylib.getTime()
       FlixGame.physicsWorld.simulationTime = FlixGame.time
-      // (FlixGame.physicsWorld.collisionDelegate as! CollisionDelegate).resolveRemovals() // resolved in simulation ended delegate, hopefully
+      // (FlixGame.physicsWorld.collisionDelegate as! CollisionDelegate).resolveRemovals() // resolved in simulation ended delegate, hopefully // TODONcheck
       camera.update(ship: ship)
-
       draw()
     }
     Raylib.closeWindow()
@@ -64,25 +64,47 @@ class FlixGame {
 
   func draw() {
     Raylib.beginDrawing()
-    Raylib.clearBackground(.myDarkGreyFadey)
+    Raylib.clearBackground(.black)
+    HUD.draw()
     Raylib.beginMode3D(camera.camera)
     FlixGame.drawList.forEach { $0.handleDraw() }
     Raylib.endMode3D()
-    Raylib.drawFPS(10, 10)
+    Raylib.drawFPS(10, Self.screenHeight - 30)
     Raylib.endDrawing()
+  }
+
+  func makePlanet(radius: Float, pos: Vector3) {
+    let planet: FlixPlanet = FlixPlanet(
+      position: pos,
+      radius: radius,
+      color: .rayWhite,
+      // isStatic: true,
+      flixType: .planet)
+    planet.rigidbody!.angularVelocity = PHYVector3(0, 0, 1)
+    Self.planetList.append(planet)
   }
 
   func makeBoxes(_ count: Int, borderDistance: Float) {
     for _ in 0..<count {
-      let box: FlixBox = FlixBox(
+      var box: FlixBox = FlixBox(
         pos: Vector3(x: .random(in: -borderDistance...borderDistance), y: .random(in: -borderDistance...borderDistance), z: 0),
-        size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
-        // size: Vector3(0.2), // debug
+        size: Vector3(x: Float.random(in: 0.1...0.8), y: Float.random(in: 0.1...0.8), z: Float.random(in: 0.1...0.8)),
         color: Color.brown,
-        isStatic: false, useStaticModel: true)
+        isStatic: false, autoInsertIntoList: false, useStaticModel: true)
+      for p: FlixPlanet in Self.planetList {
+        while box.position.distance(p.position) < p.radius + max(box.size.x, box.size.y, box.size.z)  {
+          box = FlixBox(
+            pos: Vector3(
+              x: .random(in: -borderDistance...borderDistance), y: .random(in: -borderDistance...borderDistance), z: 0),
+            size: Vector3(x: Float.random(in: 0.1...0.7), y: Float.random(in: 0.1...0.7), z: Float.random(in: 0.1...0.7)),
+            color: Color.brown,
+            isStatic: false, autoInsertIntoList: false, useStaticModel: true)
+        }
+      }
       box.rotation = .euler(Float.random(in: 0..<360), Float.random(in: 0..<360), Float.random(in: 0..<360), .degrees)
       box.rigidbody!.angularVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), Float.random(in: -2..<2))
       box.rigidbody!.linearVelocity = PHYVector3(Float.random(in: -2..<2), Float.random(in: -2..<2), 0)
+      box.insertIntoDrawList()
     }
   }
 

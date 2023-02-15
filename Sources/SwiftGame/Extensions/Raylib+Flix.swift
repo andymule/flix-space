@@ -8,10 +8,6 @@ extension ConfigFlags {
 }
 
 extension Mesh {
-  // public func Vec3AtIndex(_ pos: Int32) -> Vector3 {
-    // Vec3AtIndex(Int(pos))
-  // }
-
   public func Vec3AtIndex(_ pos: Int) -> Vector3 {
     Vector3(
       x: self.vertices[pos * 3],

@@ -11,6 +11,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
 
   private let firingCooldown: Float = 0.0 //0.1
   private var firingCooldownTimer: Float = 0.0
+  public var isInfluencedCurrently: Bool = false
 
   var score = 0
 
