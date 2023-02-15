@@ -64,6 +64,11 @@ extension Vector3 {
   init(_ uniform: Float) {
     self.init(x: uniform, y: uniform, z: uniform)
   }
+
+  init( _ x: Float, _ y: Float, _ z: Float) {
+    self.init(x: x, y: y, z: z)
+  }
+
   static func random(in range: ClosedRange<Float>) -> Vector3 {
     Vector3(
       x: Float.random(in: range),

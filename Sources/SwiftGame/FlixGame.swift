@@ -21,8 +21,7 @@ class FlixGame {
   let HUD: FlixHUD
 
   var ship: FlixShip
-  private let camera: FlixCamera = FlixCamera()
-
+  static let cameras: FlixCamera = FlixCamera()
   private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
   public init() {
@@ -41,9 +40,9 @@ class FlixGame {
       isStatic: false)
     HUD = FlixHUD(ship: ship)
     let borderDistance: Float = 30.0
-    makeWalls(borderDistance: borderDistance)
+    // makeWalls(borderDistance: borderDistance)
     makePlanet(radius: 13, pos: Vector3(x: 18, y: 18, z: 0))
-    makeBoxes(750, borderDistance: borderDistance)
+    // makeBoxes(750, borderDistance: borderDistance)
     Measure.finish("init")
   }
 
@@ -61,8 +60,7 @@ class FlixGame {
       // Measure.start("phy")
       FlixGame.physicsWorld.simulationTime = FlixGame.time
       // Measure.finish("phy")
-      // (FlixGame.physicsWorld.collisionDelegate as! CollisionDelegate).resolveRemovals() // resolved in simulation ended delegate, hopefully // TODONcheck
-      camera.update(ship: ship)
+      Self.cameras.update(ship: ship)
       // Measure.start("draw")
       draw()
       // Measure.finish("draw")
@@ -73,11 +71,14 @@ class FlixGame {
   func draw() {
     Raylib.beginDrawing()
     Raylib.clearBackground(.black)
-    Raylib.beginMode3D(camera.camera)
+    Raylib.beginMode3D(Self.cameras.camera3D)
     FlixGame.drawList.forEach { $0.handleDraw() }
     Raylib.endMode3D()
     Raylib.drawFPS(10, Self.screenHeight - 30)
     HUD.draw()
+    Raylib.beginMode2D(Self.cameras.camera2D)
+    Self.planetList.forEach({ $0.handleDraw2D() }) 
+    Raylib.endMode2D()
     Raylib.endDrawing()
   }
 

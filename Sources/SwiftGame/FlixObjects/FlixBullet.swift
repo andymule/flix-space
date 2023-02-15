@@ -5,7 +5,7 @@ import simd
 
 public class FlixBullet: FlixObject {
 
-  private var timeToLive: Float = 1.5
+  private var timeToLive: Float = 20.0
   let owner: FlixCanShoot
   var isExploding: Bool = false
 
