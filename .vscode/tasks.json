@@ -1,18 +1,73 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"type": "swift",
-			"args": [
-				"build"
-			],
-			"cwd": "/Users/arckex/Desktop/SwiftGame",
-			"problemMatcher": [
-				"$swiftc"
-			],
-			"group": "build",
-			"label": "swift: Build All",
-			"detail": "swift build"
-		}
-	]
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "swift build -c debug --package-path '${workspaceFolder}' --product ${workspaceFolderBasename}",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                {
+                    "fileLocation": "absolute",
+                    "pattern": {
+                        "regexp": "^(.+):(.[0-9]+):(.[0-9]+): (note|warning|error): (.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5,
+                    }
+                },
+                {
+                    "fileLocation": "absolute",
+                    "pattern": {
+                        "regexp": "^(.+):(.[0-9]+): (note|warning|error): (.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "severity": 3,
+                        "message": 4,
+                    }
+                },
+            ],
+        },
+        {
+            "label": "Build Release",
+            "type": "shell",
+            "command": "swift build -c release --package-path '${workspaceFolder}' --product ${workspaceFolderBasename}",
+            "problemMatcher": [
+                {
+                    "fileLocation": "absolute",
+                    "pattern": {
+                        "regexp": "^(.+):(.[0-9]+):(.[0-9]+): (note|warning|error): (.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5,
+                    }
+                },
+                {
+                    "fileLocation": "absolute",
+                    "pattern": {
+                        "regexp": "^(.+):(.[0-9]+): (note|warning|error): (.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "severity": 3,
+                        "message": 4,
+                    }
+                },
+            ],
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "swift package --package-path '${workspaceFolder}' clean",
+            "problemMatcher": []
+        }
+    ]
 }

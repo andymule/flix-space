@@ -1,0 +1,13 @@
+{
+    //Only one of these can be uncommented at a time :(
+    //If you only use lldb for Swift you can add these settings to the user settings on each OS instead of per project settings,
+
+    //macOS ///"/usr/bin/lldb",
+    "lldb.library": "/Applications/XcodeVision.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+    
+    //linux
+    //"lldb.library": "~/swift/usr/bin/liblldb",
+    
+    //Windows
+    //"lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+}
