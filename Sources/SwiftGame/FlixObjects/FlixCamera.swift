@@ -6,13 +6,13 @@ import simd
 public class FlixCamera: FlixInput {
   public func handleInput() {
     if Raylib.isKeyDown(.number1) {
-      camera3D.fovy = 40
+      camera3D.fovy = 35
     }
     if Raylib.isKeyDown(.number2) {
       camera3D.fovy = 65
     }
     if Raylib.isKeyDown(.number3) {
-      camera3D.fovy = 100
+      camera3D.fovy = 103
     }
   }
 
@@ -39,8 +39,6 @@ public class FlixCamera: FlixInput {
 
   public func update(ship: FlixShip) {
     camera3D.position = Vector3(x: ship.position.x, y: ship.position.y, z: 20)
-    camera3D.target = ship.position  // + sqrt( ship.rigidbody.linearVelocity.vector3
-    // camera.fovy = min(max(FlixCamera.startZoom, ship.rigidbody!.linearVelocity.vector3.length * 5), FlixCamera.maxZoom)
-    // camera2D.target = ship.position.vector2
+    camera3D.target = ship.position
   }
 }

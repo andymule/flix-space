@@ -4,16 +4,30 @@ import RaylibC
 import simd
 
 public class FlixPlanet: FlixObject {
+  class LandingPad {
+    var rotationPosition: Int = 0 // where  from 0 - 360 is the pad currently?
+    let padWidth: Float = 1.0
+    let trigger: PHYRigidBody
+    init() {
+        trigger = PHYRigidBody(type: .static, shape: PHYCollisionShapeBox(size: padWidth))
+        trigger.isSleepingEnabled = false
+    }
+  }
+
   let radius: Float
   let radiusInfluence: Float
   let texture: Texture2D
   let rotationSpeed: Float = 0.002
   var axisRotation: Float = 0.0
   let modelWire: Model?
-  public init(position: Vector3, radius: Float, color: Color, flixType: FlixObjectType) {  //mass?
+  let scalar2D: Float
+  var landingPad: LandingPad?
+
+  public init(position: Vector3, radius: Float, color: Color, flixType: FlixObjectType) {
     self.radius = radius
     self.radiusInfluence = radius * 4
-    texture = LoadTexture(Bundle.module.path(forResource: "Icy", ofType: "png")!)  //"Resources/planets/Icy.png"
+    self.scalar2D = Float(FlixGame.screenWidth) * radius / FlixGame.aspectRatio
+    texture = LoadTexture(Bundle.module.path(forResource: "Tropical", ofType: "png")!)
     let shape = Raylib.genMeshSphere(radius, 32, 32)
     let shapeBigger = Raylib.genMeshSphere(radiusInfluence, 6, 32)
     modelWire = Raylib.loadModelFromMesh(shapeBigger)
@@ -46,11 +60,13 @@ public class FlixPlanet: FlixObject {
     Raylib.drawModelEx(model!, drawPos, axis, angle2, Vector3(x: 1.0, y: 1.0, z: 1.0), Color(r: 222, g: 222, b: 222, a: 255))
     let diff = radiusInfluence - radius
     let slices = 6
-    let oneSliceSize = diff/Float(slices)
+    let oneSliceSize = diff / Float(slices)
     let thisNudge = oneSliceSize * Float(FlixGame.time.remainder(dividingBy: 1.0))
     for i: Int in 0..<slices {
-        let thisSize = radius + oneSliceSize * Float(i) - thisNudge
-        Raylib.drawCircle3D(drawPos, thisSize, Vector3(0.0, 0.0, 1.0), 90, Color(r: 255, g: 255, b: 0, a: UInt8((1.0-(thisSize/radiusInfluence))*255.0)))
+      let thisSize = radius + oneSliceSize * Float(i) - thisNudge
+      Raylib.drawCircle3D(
+        drawPos, thisSize, Vector3(0.0, 0.0, 1.0), 90,
+        Color(r: 255, g: 255, b: 0, a: UInt8((1.0 - (thisSize / radiusInfluence)) * 255.0)))
     }
     // Raylib.drawCircle3D(drawPos, radius, Vector3(0.0, 0.0, 1.0), 90, Color(r: 255, g: 255, b: 0, a: 255))
     // Raylib.drawModelWiresEx(
@@ -63,6 +79,6 @@ public class FlixPlanet: FlixObject {
     // let dsize = GetWorldToScreenEx(rigidbody!.position.vector3, FlixGame.cameras.camera3D, Int32(radius), Int32(radius))
     // let size2 = GetWorldToScreenEx(rigidbody!.position.vector3, FlixGame.cameras.camera3D, FlixGame.screenWidth / Int32(radius), FlixGame.screenHeight / Int32(radius))
     // Raylib.drawRectangle(Int32(dpos.x), Int32(dpos.y),  30, 45, .pink)
-      Raylib.drawCircleV(dpos, Float(FlixGame.screenWidth) / FlixGame.cameras.camera3D.fovy * radius / FlixGame.aspectRatio, Color(r: 255, g: 0, b: 255, a: 50))
+    Raylib.drawCircleV(dpos, scalar2D / FlixGame.cameras.camera3D.fovy, Color(r: 255, g: 0, b: 255, a: 50))
   }
 }
