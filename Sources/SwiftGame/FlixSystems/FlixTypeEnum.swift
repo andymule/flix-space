@@ -10,4 +10,4 @@ public enum FlixObjectType {
     case triangle
     case uninit
     case other
-  }
+}

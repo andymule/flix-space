@@ -20,5 +20,23 @@
             "args": [],
             "preLaunchTask": "Build Release"
         },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug SwiftGame",
+            "program": "${workspaceFolder:SwiftGame}/.build/debug/SwiftGame",
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGame}",
+            "preLaunchTask": "swift: Build Debug SwiftGame"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Release SwiftGame",
+            "program": "${workspaceFolder:SwiftGame}/.build/release/SwiftGame",
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGame}",
+            "preLaunchTask": "swift: Build Release SwiftGame"
+        }
     ]
 }

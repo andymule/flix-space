@@ -3,7 +3,7 @@
         "ignoreSingleLineProperties" : true
     },
     "indentation" : {
-        "spaces" : 2
+        "spaces" : 4
     },
     "indentConditionalCompilationBlocks" : true,
     "lineBreakBeforeControlFlowKeywords" : false,
@@ -47,6 +47,6 @@
         "UseTripleSlashForDocumentationComments" : true,
         "ValidateDocumentationComments" : true
     },
-    "tabWidth" : 2,
+    "tabWidth" : 4,
     "version" : 1
 }
