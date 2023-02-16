@@ -9,7 +9,8 @@ import simd
 class FlixGame {
     static let physicsWorld: PHYWorld = PHYWorld()
     static var rigidbodyToFlixObject: [PHYRigidBody: FlixObject] = .init()  // used to trace back collisions to objects
-    static var drawList: [FlixObject] = .init()
+    static var drawList3D: [FlixObject] = .init()
+	static var drawList2D: [FlixObject] = .init()
     static var planetList: [FlixPlanet] = .init()
     static var inputList: [FlixInput] = .init()
 
@@ -40,7 +41,7 @@ class FlixGame {
             color: .white,
             isStatic: false)
         HUD = FlixHUD(ship: ship)
-        let borderDistance: Float = 30.0
+//        let borderDistance: Float = 30.0
         // makeWalls(borderDistance: borderDistance)
         makePlanet(radius: 13, pos: Vector3(x: 18, y: 18, z: 0))
         // makeBoxes(750, borderDistance: borderDistance)
@@ -73,7 +74,7 @@ class FlixGame {
         Raylib.beginDrawing()
         Raylib.clearBackground(.black)
         Raylib.beginMode3D(Self.cameras.camera3D)
-        FlixGame.drawList.forEach { $0.handleDraw() }
+        FlixGame.drawList3D.forEach { $0.handleDraw() }
         Raylib.endMode3D()
         Raylib.drawFPS(10, Self.screenHeight - 30)
         HUD.draw()

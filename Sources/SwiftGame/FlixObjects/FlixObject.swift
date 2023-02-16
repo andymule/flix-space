@@ -51,8 +51,8 @@ public class FlixObject: Equatable, Hashable {
         if flixType == .uninit {
             fatalError("Must declare flixType before inserting into draw list")
         }
-        FlixGame.drawList.append(self)
-        // initCallbackDataFormat()
+        FlixGame.drawList3D.append(self)
+        if self is FlixDraws2D { FlixGame.drawList2D.append(self) }
         guard let rigidbody = rigidbody else { return }
         FlixGame.physicsWorld.add(rigidbody)
         FlixGame.rigidbodyToFlixObject[rigidbody] = self
@@ -60,10 +60,11 @@ public class FlixObject: Equatable, Hashable {
 
     // call from children via die()
     private func removeFromDrawList() {
-        FlixGame.drawList.removeFirstEqualItem(self)
+        FlixGame.drawList3D.removeFirstEqualItem(self)
         if !isStaticInstanced && model != nil {
             Raylib.unloadModel(model!)
         }
+        if self is FlixDraws2D { FlixGame.drawList2D.removeFirstEqualItem(self) }
         guard let rigidbody = rigidbody else { return }
         FlixGame.rigidbodyToFlixObject.removeValue(forKey: rigidbody)
         FlixGame.physicsWorld.remove(rigidbody)

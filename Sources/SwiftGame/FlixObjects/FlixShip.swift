@@ -74,7 +74,9 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
             rigidbody!.position.z = 0
         }
         if lockRotationToZOnly {
-            rigidbody!.orientation = PHYQuaternion.euler(0, 0, rigidbody!.orientation.vector4.toEuler().z * 180 / Float.pi)
+            rigidbody!.orientation = PHYQuaternion.euler(0, 0, rigidbody!.orientation.vector4.toEuler().z, .radians)
+			// print both eulers
+			// print(rigidbody!.orientation.vector4.toEuler())
             rigidbody!.angularVelocity = PHYVector3(0, 0, rigidbody!.angularVelocity.z)
         }
         let pos: Vector3 = rigidbody!.position.vector3

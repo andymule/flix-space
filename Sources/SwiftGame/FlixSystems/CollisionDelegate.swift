@@ -26,7 +26,7 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
 
     func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, willSimulateAtTime time: TimeInterval) {
         for p in FlixGame.planetList {
-            for o in FlixGame.drawList where (o.flixType == .asteroid || o.flixType == .bullet || o.flixType == .ship) {
+            for o in FlixGame.drawList3D where (o.flixType == .asteroid || o.flixType == .bullet || o.flixType == .ship) {
                 let dist = p.position.distance(o.position)
                 if dist < p.radiusInfluence {
                     if o.flixType == .ship {
