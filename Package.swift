@@ -5,18 +5,15 @@ import PackageDescription
 let package: Package = Package(
   name: "SwiftGame",
   dependencies: [
-    .package(url: "https://github.com/AdamEisfeld/PhyKit.git", from: "1.0.1"),
+    .package(url: "https://github.com/AdamEisfeld/PhyKit.git", branch: "master"),
     .package(url: "https://github.com/STREGAsGate/Raylib.git", branch: "master"),
-    .package(url: "https://github.com/mezhevikin/Measure.git", from: "0.0.1"),
 	// .package(url: "https://github.com/STREGAsGate/GameMath.git", .revision("d540badd052c61c9917a54edb5dcb1dc4741c01c")),
-    
-	// change branch to master after PR goes thru
-    .package(url: "https://github.com/SwifterSwift/SwifterSwift.git", branch: "HKActivitySummary-macos"),
+    .package(url: "https://github.com/SwifterSwift/SwifterSwift.git", branch: "master"),
   ],
   targets: [
     .executableTarget(
       name: "SwiftGame",
-      dependencies: ["PhyKit", "Raylib", "SwifterSwift", "Measure"],
+      dependencies: ["PhyKit", "Raylib", "SwifterSwift"],
       resources: [.process("Resources")]
     )
   ]

@@ -1,4 +1,3 @@
-import Measure
 import PhyKit
 import Raylib
 import RaylibC
@@ -27,7 +26,6 @@ class FlixGame {
     private var collisionDelegate: CollisionDelegate = CollisionDelegate()
 
     public init() {
-        Measure.start("init")
         Raylib.setConfigFlags(.msaa4xHint | .vsyncHint)
         Raylib.setTraceLogLevel(.warning)
         Raylib.initWindow(Self.screenWidth, Self.screenHeight, "FlixGame")
@@ -41,11 +39,10 @@ class FlixGame {
             color: .white,
             isStatic: false)
         HUD = FlixHUD(ship: ship)
-//        let borderDistance: Float = 30.0
-        // makeWalls(borderDistance: borderDistance)
+       let borderDistance: Float = 30.0
+        makeWalls(borderDistance: borderDistance)
         makePlanet(radius: 13, pos: Vector3(x: 18, y: 18, z: 0))
-        // makeBoxes(750, borderDistance: borderDistance)
-        Measure.finish("init")
+        makeBoxes(750, borderDistance: borderDistance)
     }
 
     public func run() {
@@ -56,16 +53,11 @@ class FlixGame {
         while Raylib.windowShouldClose == false {
             ship.isInfluencedCurrently = false
             FlixGame.inputList.forEach { $0.handleInput() }
-            // update time
             FlixGame.deltaTime = Raylib.getFrameTime()
             FlixGame.time = Raylib.getTime()
-            // Measure.start("phy")
             FlixGame.physicsWorld.simulationTime = FlixGame.time
-            // Measure.finish("phy")
             Self.cameras.update(ship: ship)
-            // Measure.start("draw")
             draw()
-            // Measure.finish("draw")
         }
         Raylib.closeWindow()
     }

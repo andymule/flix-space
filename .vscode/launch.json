@@ -4,39 +4,39 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "2.0.0",
     "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/.build/debug/${workspaceFolderBasename}",
-            "args": [],
-            "preLaunchTask": "Build Debug"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Release",
-            "program": "${workspaceFolder}/.build/release/${workspaceFolderBasename}",
-            "args": [],
-            "preLaunchTask": "Build Release"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug SwiftGame",
-            "program": "${workspaceFolder:SwiftGame}/.build/debug/SwiftGame",
-            "args": [],
-            "cwd": "${workspaceFolder:SwiftGame}",
-            "preLaunchTask": "swift: Build Debug SwiftGame"
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Release SwiftGame",
-            "program": "${workspaceFolder:SwiftGame}/.build/release/SwiftGame",
-            "args": [],
-            "cwd": "${workspaceFolder:SwiftGame}",
-            "preLaunchTask": "swift: Build Release SwiftGame"
-        }
-    ]
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Debug",
+			"program": "${workspaceFolder}/.build/debug/${workspaceFolderBasename}",
+			"args": [],
+			"preLaunchTask": "Build Debug"
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Release",
+			"program": "${workspaceFolder}/.build/release/${workspaceFolderBasename}",
+			"args": [],
+			"preLaunchTask": "Build Release"
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Debug SwiftGame",
+			"program": "${workspaceFolder:flix-space}/.build/debug/SwiftGame",
+			"args": [],
+			"cwd": "${workspaceFolder:flix-space}",
+			"preLaunchTask": "swift: Build Debug SwiftGame"
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Release SwiftGame",
+			"program": "${workspaceFolder:flix-space}/.build/release/SwiftGame",
+			"args": [],
+			"cwd": "${workspaceFolder:flix-space}",
+			"preLaunchTask": "swift: Build Release SwiftGame"
+		}
+	]
 }
