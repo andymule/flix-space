@@ -4,7 +4,6 @@ import RaylibC
 import simd
 
 class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHYWorldSimulationDelegate {
-    var markedForRemoval: Set<FlixObject> = .init()
 
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, triggerDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
@@ -39,7 +38,11 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
         }
     }
 
-    private func resolveRemovals() {
+    fileprivate var markedForRemoval: Set<FlixObject> = .init()
+    fileprivate func removeFromScene(_ obj: FlixObject) {
+        markedForRemoval.insert(obj)
+    }
+    fileprivate func resolveRemovals() {
         markedForRemoval.forEach { $0.die() }  // might be redudant but die() checks for that
         markedForRemoval.removeAll()
     }
@@ -52,21 +55,21 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
         if object1.flixType == .bullet {
             object1.explode()  // Bullet explodes normally
             object2.explode(FlixCallBackData(rigidbodies: [object1.rigidbody]))  // Asteroid explodes with callback data
-        } else if object1.flixType == .asteroid {
+        } else {
             object1.explode(FlixCallBackData(rigidbodies: [object2.rigidbody]))  // Asteroid explodes with callback data
             object2.explode()  // Bullet explodes normally
         }
-        markedForRemoval.insert(object1)
-        markedForRemoval.insert(object2)
+        removeFromScene(object1)
+        removeFromScene(object2)
     }
 
     func explodeStroidHitPlanet(_ object1: FlixObject, _ object2: FlixObject) {
         if object1.flixType == .asteroid {
             object1.explode()
-            markedForRemoval.insert(object1)
+            removeFromScene(object1)
         } else {
             object2.explode()
-            markedForRemoval.insert(object2)
+            removeFromScene(object2)
         }
     }
 
