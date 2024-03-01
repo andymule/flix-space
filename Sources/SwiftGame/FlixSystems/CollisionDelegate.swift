@@ -48,27 +48,41 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
         resolveRemovals()
     }
 
+    func explodeShotStroid(_ object1: FlixObject, _ object2: FlixObject) {
+        if object1.flixType == .bullet {
+            object1.explode()  // Bullet explodes normally
+            object2.explode(FlixCallBackData(rigidbodies: [object1.rigidbody]))  // Asteroid explodes with callback data
+        } else if object1.flixType == .asteroid {
+            object1.explode(FlixCallBackData(rigidbodies: [object2.rigidbody]))  // Asteroid explodes with callback data
+            object2.explode()  // Bullet explodes normally
+        }
+        markedForRemoval.insert(object1)
+        markedForRemoval.insert(object2)
+    }
+
+    func explodeStroidHitPlanet(_ object1: FlixObject, _ object2: FlixObject) {
+        if object1.flixType == .asteroid {
+            object1.explode()
+            markedForRemoval.insert(object1)
+        } else {
+            object2.explode()
+            markedForRemoval.insert(object2)
+        }
+    }
+
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, collisionDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair
     ) {
         let flixObjA: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyA!]!
         let flixObjB: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyB!]!
-        if flixObjA.flixType == .bullet && flixObjB.flixType == .asteroid {
-            flixObjA.explode()
-            flixObjB.explode(FlixCallBackData(rigidbodies: [flixObjA.rigidbody]))
-            markedForRemoval.insert(flixObjA)
-            markedForRemoval.insert(flixObjB)
-        } else if flixObjA.flixType == .asteroid && flixObjB.flixType == .bullet {
-            flixObjA.explode(FlixCallBackData(rigidbodies: [flixObjB.rigidbody]))
-            flixObjB.explode()
-            markedForRemoval.insert(flixObjA)
-            markedForRemoval.insert(flixObjB)
-        } else if flixObjA.flixType == .asteroid && flixObjB.flixType == .planet {
-            flixObjA.explode()
-            markedForRemoval.insert(flixObjA)
-        } else if flixObjA.flixType == .planet && flixObjB.flixType == .asteroid {
-            flixObjB.explode()
-            markedForRemoval.insert(flixObjB)
+
+        switch (flixObjA.flixType, flixObjB.flixType) {
+        case (.bullet, .asteroid), (.asteroid, .bullet):
+            explodeShotStroid(flixObjA, flixObjB)
+        case (.asteroid, .planet), (.planet, .asteroid):
+            explodeStroidHitPlanet(flixObjA, flixObjB)
+        default:
+            break  // Do nothing for other combinations
         }
     }
 

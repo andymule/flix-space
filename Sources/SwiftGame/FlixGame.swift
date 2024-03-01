@@ -43,13 +43,13 @@ class FlixGame {
         makeWalls(borderDistance: borderDistance)
         makePlanet(radius: 13, pos: Vector3(x: 18, y: 18, z: 0))
         makeBoxes(750, borderDistance: borderDistance)
+
+		FlixGame.physicsWorld.collisionDelegate = collisionDelegate
+        FlixGame.physicsWorld.triggerDelegate = collisionDelegate
+        FlixGame.physicsWorld.simulationDelegate = collisionDelegate
     }
 
     public func run() {
-        FlixGame.physicsWorld.collisionDelegate = collisionDelegate
-        FlixGame.physicsWorld.triggerDelegate = collisionDelegate
-        FlixGame.physicsWorld.simulationDelegate = collisionDelegate
-
         while Raylib.windowShouldClose == false {
             ship.isInfluencedCurrently = false
             FlixGame.inputList.forEach { $0.handleInput() }
