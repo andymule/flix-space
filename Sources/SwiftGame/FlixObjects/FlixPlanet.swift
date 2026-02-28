@@ -5,7 +5,7 @@ import simd
 
 public class FlixPlanet: FlixObject, FlixDraws2D {
     class LandingPad {
-        var rotationPosition: Int = 0  // where  from 0 - 360 is the pad currently?
+        var rotationPosition: Int = 0
         let padWidth: Float = 1.0
         let trigger: PHYRigidBody
         init() {
@@ -31,30 +31,31 @@ public class FlixPlanet: FlixObject, FlixDraws2D {
         let shape = Raylib.genMeshSphere(radius, 32, 32)
         let shapeBigger = Raylib.genMeshSphere(radiusInfluence, 3, 32)
         modelWire = Raylib.loadModelFromMesh(shapeBigger)
-        super.init()
+        let rb = PHYRigidBody(type: .kinematic, shape: PHYCollisionShapeSphere(radius: radius))
+        rb.position = position.phyVector3
+        rb.linearDamping = 0.0
+        rb.angularDamping = 0.0
+        rb.friction = 1.0
+        rb.restitution = 0.0
+        rb.isSleepingEnabled = false
+        super.init(rigidbody: rb)
         self.color = color
         model = Raylib.loadModelFromMesh(shape)
         model!.materials[0].maps[0].texture = texture
-        rigidbody = PHYRigidBody(type: .kinematic, shape: PHYCollisionShapeSphere(radius: radius))
-        rigidbody?.position = position.phyVector3
-        rigidbody?.linearDamping = 0.0
-        rigidbody?.angularDamping = 0.0
-        rigidbody?.friction = 1.0
-        rigidbody?.restitution = 0.0
-        rigidbody?.isSleepingEnabled = false
-        self.color = color
         self.flixType = flixType
         insertIntoDrawList()
     }
 
-    override public func handleDraw() {
+    override public func update(dt: Float) {
         axisRotation += rotationSpeed
         axisRotation = axisRotation.truncatingRemainder(dividingBy: 2 * Float.pi)
-        rigidbody?.eulerOrientation = Vector3(x: Float.pi / 2, y: 0, z: axisRotation).phyVector3
-        let (axis, angle) = rigidbody!.orientation.vector4.toAxisAngle()
+        rigidbody.eulerOrientation = Vector3(x: Float.pi / 2, y: 0, z: axisRotation).phyVector3
+    }
+
+    override public func handleDraw() {
+        let (axis, angle) = rigidbody.orientation.vector4.toAxisAngle()
         let angle2 = angle * 180 / Float.pi
-        // Raylib.drawSphereWires(rigidbody!.position.vector3, radiusInfluence, 32, 32, Color(r: 255, g: 255, b: 0, a: 25))
-        let drawPos = rigidbody!.position.vector3
+        let drawPos = rigidbody.position.vector3
         Raylib.drawModelEx(model!, drawPos, axis, angle2, Vector3(x: 1.0, y: 1.0, z: 1.0), Color(r: 222, g: 222, b: 222, a: 255))
         let diff = radiusInfluence - radius
         let slices = 6
@@ -72,7 +73,7 @@ public class FlixPlanet: FlixObject, FlixDraws2D {
     }
 
     public func handleDraw2D() {
-        let dpos: Vector2 = GetWorldToScreen(rigidbody!.position.vector3, FlixGame.cameras.camera3D)
-		Raylib.drawCircleV(dpos, scalar2D / FlixGame.cameras.camera3D.fovy, Color(r: 255, g: 255, b: 0, a: 50))
+        let dpos: Vector2 = GetWorldToScreen(rigidbody.position.vector3, FlixGame.cameras.camera3D)
+        Raylib.drawCircleV(dpos, scalar2D / FlixGame.cameras.camera3D.fovy, Color(r: 255, g: 255, b: 0, a: 50))
     }
 }

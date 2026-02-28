@@ -7,32 +7,29 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
 
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, triggerDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
-    ) {
-        // print(collisionPair.rigidBody.className, collisionPair.trigger.className)
-    }
+    ) {}
 
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, triggerDidContinueAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
-    ) {
-        // print(collisionPair.rigidBody.className, collisionPair.trigger.className)
-    }
+    ) {}
 
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, triggerDidEndAtTime time: TimeInterval, with collisionPair: PhyKit.PHYTriggerPair
-    ) {
-        // print(collisionPair.rigidBody.className, collisionPair.trigger.className)
-    }
+    ) {}
 
     func physicsWorld(_ physicsWorld: PhyKit.PHYWorld, willSimulateAtTime time: TimeInterval) {
         for p in FlixGame.planetList {
-            for o in FlixGame.drawList3D where (o.flixType == .asteroid || o.flixType == .bullet || o.flixType == .ship) {
+            for (_, o) in FlixGame.rigidbodyToFlixObject {
+                let type = o.flixType
+                guard type == .asteroid || type == .bullet || type == .ship else { continue }
                 let dist = p.position.distance(o.position)
+                guard dist > 0.01 else { continue }
                 if dist < p.radiusInfluence {
-                    if o.flixType == .ship {
-                        (o as! FlixShip).isInfluencedCurrently = true
+                    if type == .ship, let ship = o as? FlixShip {
+                        ship.isInfluencedCurrently = true
                     }
                     let force: Vector3 = (p.position - o.position) / (dist * dist)
-                    o.rigidbody?.applyForce(force.scale(6).phyVector3, impulse: false)
+                    o.rigidbody.applyForce(force.scale(FlixGame.gravityForceScale).phyVector3, impulse: false)
                 }
             }
         }
@@ -43,7 +40,7 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
         markedForRemoval.insert(obj)
     }
     fileprivate func resolveRemovals() {
-        markedForRemoval.forEach { $0.die() }  // might be redudant but die() checks for that
+        for obj in markedForRemoval { obj.die() }
         markedForRemoval.removeAll()
     }
 
@@ -53,11 +50,11 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
 
     func explodeShotStroid(_ object1: FlixObject, _ object2: FlixObject) {
         if object1.flixType == .bullet {
-            object1.explode()  // Bullet explodes normally
-            object2.explode(FlixCallBackData(rigidbodies: [object1.rigidbody]))  // Asteroid explodes with callback data
+            (object1 as? Explodable)?.explode(nil)
+            (object2 as? Explodable)?.explode(.impactFrom(object1.rigidbody))
         } else {
-            object1.explode(FlixCallBackData(rigidbodies: [object2.rigidbody]))  // Asteroid explodes with callback data
-            object2.explode()  // Bullet explodes normally
+            (object1 as? Explodable)?.explode(.impactFrom(object2.rigidbody))
+            (object2 as? Explodable)?.explode(nil)
         }
         removeFromScene(object1)
         removeFromScene(object2)
@@ -65,10 +62,10 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
 
     func explodeStroidHitPlanet(_ object1: FlixObject, _ object2: FlixObject) {
         if object1.flixType == .asteroid {
-            object1.explode()
+            (object1 as? Explodable)?.explode(nil)
             removeFromScene(object1)
         } else {
-            object2.explode()
+            (object2 as? Explodable)?.explode(nil)
             removeFromScene(object2)
         }
     }
@@ -76,8 +73,10 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, collisionDidBeginAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair
     ) {
-        let flixObjA: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyA!]!
-        let flixObjB: FlixObject = FlixGame.rigidbodyToFlixObject[collisionPair.rigidBodyB!]!
+        guard let bodyA = collisionPair.rigidBodyA,
+              let bodyB = collisionPair.rigidBodyB,
+              let flixObjA = FlixGame.rigidbodyToFlixObject[bodyA],
+              let flixObjB = FlixGame.rigidbodyToFlixObject[bodyB] else { return }
 
         switch (flixObjA.flixType, flixObjB.flixType) {
         case (.bullet, .asteroid), (.asteroid, .bullet):
@@ -85,21 +84,16 @@ class CollisionDelegate: PHYWorldCollisionDelegate, PHYWorldTriggerDelegate, PHY
         case (.asteroid, .planet), (.planet, .asteroid):
             explodeStroidHitPlanet(flixObjA, flixObjB)
         default:
-            break  // Do nothing for other combinations
+            break
         }
     }
 
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, collisionDidContinueAtTime time: TimeInterval,
         with collisionPair: PhyKit.PHYCollisionPair
-    ) {
-        //  TODO can I remove this?
-
-    }
+    ) {}
 
     func physicsWorld(
         _ physicsWorld: PhyKit.PHYWorld, collisionDidEndAtTime time: TimeInterval, with collisionPair: PhyKit.PHYCollisionPair
-    ) {
-        //  print(collisionPair.rigidBodyA!.className, collisionPair.rigidBodyB!.className)
-    }
+    ) {}
 }

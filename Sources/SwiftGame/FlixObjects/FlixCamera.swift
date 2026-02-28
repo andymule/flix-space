@@ -17,8 +17,8 @@ public class FlixCamera: FlixInput {
     }
 
     static let viewType: Float = 1
-    static let startZoom: Float = 45.0  //+ viewType * 30.0
-    static let maxZoom: Float = 90  //+ viewType * 30
+    static let startZoom: Float = 45.0
+    static let maxZoom: Float = 90
 
     public var camera3D: Camera3D = Camera3D(
         position: Vector3(x: 0.0, y: 0.0, z: 20.0),

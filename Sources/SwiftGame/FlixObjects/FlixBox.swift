@@ -3,7 +3,7 @@ import Raylib
 import RaylibC
 import simd
 
-public class FlixBox: FlixObject {
+public class FlixBox: FlixObject, Explodable {
     public static let staticModel: Model = Raylib.loadModelFromMesh(Raylib.genMeshCube(1, 1, 1))
     public var size: Vector3 = .zero
     var isExploding: Bool = false
@@ -13,37 +13,40 @@ public class FlixBox: FlixObject {
         autoInsertIntoList: Bool = true, useStaticModel: Bool = false
     ) {
         self.size = size
-        super.init()
+        let collisionShape = PHYCollisionShapeBox(
+            width: size.x, height: size.y, length: size.z)
+        let density: Float = 5.0
+        let mass: Float = size.x * size.y * size.z * density
+        let rb = PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
+        rb.restitution = 0.75
+        rb.friction = 0.1
+        rb.linearDamping = 0.0
+        rb.angularDamping = 0.0
+        rb.position = pos.phyVector3
+        rb.isSleepingEnabled = !isStatic
+        super.init(rigidbody: rb)
         self.isStaticInstanced = useStaticModel
         if !isStaticInstanced {
-            self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
+            self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(size.x, size.y, size.z))
         }
         self.color = color
-        let collisionShape: PHYCollisionShapeBox = PHYCollisionShapeBox(
-            width: self.size.x, height: self.size.y, length: self.size.z)
-        let mass: Float = self.size.x + self.size.y + self.size.z
-        self.rigidbody = PHYRigidBody(type: isStatic ? .static : .dynamic(mass: mass), shape: collisionShape)
-        rigidbody!.restitution = 0.75
-        rigidbody!.friction = 0.1
-        rigidbody!.linearDamping = 0.0
-        rigidbody!.angularDamping = 0.0
-        rigidbody!.position = pos.phyVector3
-        rigidbody!.isSleepingEnabled = false
         self.flixType = flixType
         if autoInsertIntoList {
             insertIntoDrawList()
         }
     }
 
-    override public func handleDraw() {
-        if isDying {
-            return
-        }
+    override public func update(dt: Float) {
+        if isDying { return }
         if constrainPlane {
-            rigidbody!.position.z = 0
+            rigidbody.position.z = 0
         }
-        let pos: Vector3 = rigidbody!.position.vector3
-        var (axis, angle) = rigidbody!.orientation.vector4.toAxisAngle()
+    }
+
+    override public func handleDraw() {
+        if isDying { return }
+        let pos: Vector3 = rigidbody.position.vector3
+        var (axis, angle) = rigidbody.orientation.vector4.toAxisAngle()
         angle = angle * 180 / Float.pi
 
         if isStaticInstanced {
@@ -59,16 +62,34 @@ public class FlixBox: FlixObject {
         }
     }
 
-    override public func explode(_ callbackData: FlixCallBackData? = nil) {
-        if flixType == .asteroid && !isExploding {
-            isExploding = true
-            if isStaticInstanced {
-                // generate a temp instance for explosion and allows for proper mem free on it later with FlixObject destructors
-                self.model = Raylib.loadModelFromMesh(Raylib.genMeshCube(self.size.x, self.size.y, self.size.z))
-            }
-            _ = FlixMeshExplosion(
-                mesh: model!.meshes[0], startingBody: rigidbody!,
-                color: color, collidingBody: callbackData?.cb_rigidbodies[0])
+    /// Generates 12 triangles for a cube with given dimensions, purely on CPU (no GPU mesh upload).
+    static func cubeTriangles(size: Vector3) -> [Triangle] {
+        let hx = size.x / 2, hy = size.y / 2, hz = size.z / 2
+        let v0 = Vector3(-hx, -hy,  hz), v1 = Vector3( hx, -hy,  hz)
+        let v2 = Vector3( hx,  hy,  hz), v3 = Vector3(-hx,  hy,  hz)
+        let v4 = Vector3(-hx, -hy, -hz), v5 = Vector3( hx, -hy, -hz)
+        let v6 = Vector3( hx,  hy, -hz), v7 = Vector3(-hx,  hy, -hz)
+        return [
+            Triangle(v0, v1, v2), Triangle(v0, v2, v3),
+            Triangle(v5, v4, v7), Triangle(v5, v7, v6),
+            Triangle(v1, v5, v6), Triangle(v1, v6, v2),
+            Triangle(v4, v0, v3), Triangle(v4, v3, v7),
+            Triangle(v3, v2, v6), Triangle(v3, v6, v7),
+            Triangle(v4, v5, v1), Triangle(v4, v1, v0),
+        ]
+    }
+
+    public func explode(_ data: FlixCollisionData? = nil) {
+        guard flixType == .asteroid, !isExploding else { return }
+        isExploding = true
+        var collidingBody: PHYRigidBody? = nil
+        if case .impactFrom(let body) = data {
+            collidingBody = body
         }
+        _ = FlixMeshExplosion(
+            triangles: FlixBox.cubeTriangles(size: size),
+            startingBody: rigidbody,
+            color: color,
+            collidingBody: collidingBody)
     }
 }

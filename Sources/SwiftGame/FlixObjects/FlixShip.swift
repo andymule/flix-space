@@ -4,24 +4,19 @@ import RaylibC
 import simd
 
 public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
-    private let bulletsMAX = 9999  //10
+    private let bulletsMAX = 9999
     private var bulletsActiveCount = 0
-    private let recoilScale: Float = 0  //-0.2
+    private let recoilScale: Float = 0
     private let accel: Float = 3.0
 
-    private let firingCooldown: Float = 0.0  //0.1
+    private let firingCooldown: Float = 0.01
     private var firingCooldownTimer: Float = 0.0
     public var isInfluencedCurrently: Bool = false
 
     var score = 0
 
-    // TODO need to change rigidbody scale if you change this w/ setter, and make sure the dictionary is updated to reflect new rigidbody
-    // and old rigidbody is removed etc ok good job me you're doing great keep it up you're doing great you're doing great
     public let scale: Float
 
-    // private let model: Model = Raylib.loadModel("Resources/ship.gltf")
-    // cant get blender to export with correct orientation
-    // private let boostmodel: Model = Raylib.loadModel("Resources/boost.gltf")
     private let boostModel: Model
     let boostTriangle: Triangle = Triangle(
         Vector3(x: -0.45, y: -0.65, z: 0),
@@ -53,34 +48,36 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
         self.scale = scale
         boostModel = Raylib.loadModelFromMesh(Raylib.GenMeshFromTriangleArray([boostTriangle]))
         brakeModel = Raylib.loadModelFromMesh(Raylib.GenMeshFromTriangleArray(brakeTriangles))
-        super.init()
-        model = Raylib.loadModel(Bundle.module.path(forResource: "ship", ofType: "gltf")!)  //Raylib.loadModel("Resources/ship.gltf")
+        let shipModel = Raylib.loadModel(Bundle.module.path(forResource: "ship", ofType: "gltf")!)
+        let rb = PHYRigidBodyFromRaylibModel(
+            model: shipModel, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
+        rb.restitution = 0.3
+        rb.friction = 1.0
+        rb.linearDamping = 0.0
+        rb.angularDamping = 0.0
+        rb.position = pos.phyVector3
+        rb.isSleepingEnabled = false
+        super.init(rigidbody: rb)
+        self.model = shipModel
         self.color = color
-        self.rigidbody = PHYRigidBodyFromRaylibModel(
-            model: model!, scale: scale, isStatic: false, mass: scale, collisionType: .concave)
-        rigidbody!.restitution = 0.3  //m_collisionFlags
-        rigidbody!.friction = 1.0
-        rigidbody!.linearDamping = 0.0
-        rigidbody!.angularDamping = 0.0
-        rigidbody!.position = pos.phyVector3
-        rigidbody!.isSleepingEnabled = false
         flixType = .ship
         insertIntoDrawList()
         insertIntoInputList()
     }
 
-    override public func handleDraw() {
+    override public func update(dt: Float) {
         if constrainPlane {
-            rigidbody!.position.z = 0
+            rigidbody.position.z = 0
         }
         if lockRotationToZOnly {
-            rigidbody!.orientation = PHYQuaternion.euler(0, 0, rigidbody!.orientation.vector4.toEuler().z, .radians)
-			// print both eulers
-			// print(rigidbody!.orientation.vector4.toEuler())
-            rigidbody!.angularVelocity = PHYVector3(0, 0, rigidbody!.angularVelocity.z)
+            rigidbody.orientation = PHYQuaternion.euler(0, 0, rigidbody.orientation.vector4.toEuler().z, .radians)
+            rigidbody.angularVelocity = PHYVector3(0, 0, rigidbody.angularVelocity.z)
         }
-        let pos: Vector3 = rigidbody!.position.vector3
-        let (axis, angle) = rigidbody!.orientation.vector4.toAxisAngle()
+    }
+
+    override public func handleDraw() {
+        let pos: Vector3 = rigidbody.position.vector3
+        let (axis, angle) = rigidbody.orientation.vector4.toAxisAngle()
         let angle2 = angle * 180 / Float.pi
         if isBraking {
             Raylib.drawModelEx(brakeModel, pos, axis, angle2, Vector3(scale), .orange)
@@ -90,7 +87,7 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
             Raylib.drawModelEx(boostModel, pos, axis, angle2, Vector3(scale), .orange)
         }
         if wireframe {
-            Raylib.drawModelWiresEx(model!, pos, axis, angle, Vector3(scale), wireframeColor)
+            Raylib.drawModelWiresEx(model!, pos, axis, angle2, Vector3(scale), wireframeColor)
         }
     }
 
@@ -98,18 +95,18 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
         isBoosting = false
         isBraking = false
         if Raylib.isKeyDown(.right) {
-            rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: -accel * FlixGame.deltaTime)
+            rigidbody.angularVelocity += PHYVector3(x: 0, y: 0, z: -accel * FlixGame.deltaTime)
         }
         if Raylib.isKeyDown(.left) {
-            rigidbody!.angularVelocity += PHYVector3(x: 0, y: 0, z: accel * FlixGame.deltaTime)
+            rigidbody.angularVelocity += PHYVector3(x: 0, y: 0, z: accel * FlixGame.deltaTime)
         }
         if Raylib.isKeyDown(.up) {
             isBoosting = true
-            rigidbody!.linearVelocity += forward.scale(accel * FlixGame.deltaTime).phyVector3
+            rigidbody.linearVelocity += forward.scale(accel * FlixGame.deltaTime).phyVector3
         }
         if Raylib.isKeyDown(.down) {
             isBraking = true
-            rigidbody!.linearVelocity += forward.scale(-accel * FlixGame.deltaTime).phyVector3
+            rigidbody.linearVelocity += forward.scale(-accel * FlixGame.deltaTime).phyVector3
         }
         firingCooldownTimer -= FlixGame.deltaTime
         if Raylib.isKeyDown(.space) {
@@ -123,13 +120,13 @@ public class FlixShip: FlixObject, FlixInput, FlixCanShoot {
         }
         firingCooldownTimer = firingCooldown
         bulletsActiveCount += 1
-        let bullet: FlixBullet = FlixBullet(
-            pos: position, scale: 0.1, color: .cyan, owner: self, angularVel: rigidbody!.angularVelocity)
-        bullet.rigidbody!.linearVelocity =
-            rigidbody!.linearVelocity + forward.scale(6).phyVector3
-        rigidbody!.linearVelocity = rigidbody!.linearVelocity + forward.scale(recoilScale).phyVector3  // recoil
-        bullet.rigidbody!.position = position.phyVector3 + forward.scale(scale * 1.3).phyVector3
-        bullet.rigidbody!.orientation = rotation
+        let bullet = FlixBullet(
+            pos: position, scale: 0.1, color: .cyan, owner: self, angularVel: rigidbody.angularVelocity)
+        bullet.rigidbody.linearVelocity =
+            rigidbody.linearVelocity + forward.scale(6).phyVector3
+        rigidbody.linearVelocity = rigidbody.linearVelocity + forward.scale(recoilScale).phyVector3
+        bullet.rigidbody.position = position.phyVector3 + forward.scale(scale * 1.3).phyVector3
+        bullet.rigidbody.orientation = rotation
     }
 
     public func bulletDeathCallback(addPoints: Bool = false) {

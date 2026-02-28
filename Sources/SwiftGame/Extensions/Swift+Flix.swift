@@ -1,18 +1,22 @@
 extension Array where Element: Equatable {
     public mutating func removeEqualItems(_ item: Element) {
-        self = self.filter { (currentItem: Element) -> Bool in
-            return currentItem != item
-        }
+        self = self.filter { $0 != item }
     }
 
     public mutating func removeFirstEqualItem(_ item: Element) {
-        guard var currentItem: Element = self.first else { return }
-        var index: Int = 0
-        while currentItem != item {
-            index += 1
-            currentItem = self[index]
+        guard let index = firstIndex(of: item) else { return }
+        remove(at: index)
+    }
+
+    /// O(1) removal by swapping with last element. Does not preserve order.
+    public mutating func swapRemove(_ item: Element) {
+        guard let index = firstIndex(of: item) else { return }
+        if index == count - 1 {
+            removeLast()
+        } else {
+            swapAt(index, count - 1)
+            removeLast()
         }
-        self.remove(at: index)
     }
 }
 
@@ -29,10 +33,7 @@ extension FloatingPoint {
         (self * 10).rounded() / 10
     }
 
-    // rad2deg
     public var rad2deg: Self { self * 180 / .pi }
-
-    // deg2rad
     public var deg2rad: Self { self * .pi / 180 }
 }
 

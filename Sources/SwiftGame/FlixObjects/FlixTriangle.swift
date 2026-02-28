@@ -4,38 +4,58 @@ import RaylibC
 import simd
 
 public class FlixTriangle: FlixObject {
-    public var scale: Float = 1
+    private var localA: Vector3
+    private var localB: Vector3
+    private var localC: Vector3
+    private var linVel: Vector3
+    private var angVel: Vector3
+    private var pos: Vector3
+    private var orient: Quaternion
+    private let linDamp: Float = 0.3
+    private let angDamp: Float = 0.3
 
     public init(triangle: Triangle, startingBody: PHYRigidBody, color: Color, collidingBody: PHYRigidBody? = nil) {
-        super.init()
-        self.model = Raylib.loadModelFromMesh(Raylib.GenMeshFromTriangleArray([triangle]))
+        self.localA = triangle.a
+        self.localB = triangle.b
+        self.localC = triangle.c
+
+        let startLinVel = startingBody.linearVelocity.vector3.scale(0.5)
+        let impactVel = collidingBody?.linearVelocity.vector3.scale(.random(in: 0.2...0.5)) ?? .zero
+        self.linVel = startLinVel + impactVel
+        self.angVel = startingBody.angularVelocity.vector3.scale(.random(in: -1.0...1.0))
+        self.pos = startingBody.position.vector3
+        self.orient = startingBody.orientation.quaternion
+
+        super.init(rigidbody: FlixObject.dummyRigidbody)
+        self.usesPhysicsWorld = false
         self.color = color
-        self.rigidbody = PHYRigidBodyFromRaylibModel(
-            model: model!, scale: scale, isStatic: false, mass: 0.01, collisionType: .concave)
-        rigidbody!.restitution = 0.0
-        rigidbody!.friction = 0.1
-        rigidbody!.linearDamping = 0.3
-        rigidbody!.angularDamping = 0.3
-        rigidbody!.position = startingBody.position  //+ triangle.averagePos().scale(0.3).phyVector3
-        rigidbody!.linearVelocity =
-            startingBody.linearVelocity.vector3.scale(0.5).phyVector3
-            + (collidingBody?.linearVelocity.vector3.scale(.random(in: 0.2...0.5)).phyVector3 ?? PHYVector3(0, 0, 0))
-        rigidbody!.angularVelocity = startingBody.angularVelocity.vector3.scale(.random(in: -1.0...1.0)).phyVector3
-        rigidbody!.isSleepingEnabled = false
         self.flixType = .triangle
+        self.isStaticInstanced = true
         insertIntoDrawList()
     }
 
+    override public func update(dt: Float) {
+        if isDying { return }
+        let dampLin = max(0, 1.0 - linDamp * dt)
+        linVel = linVel.scale(dampLin)
+        pos = pos + linVel.scale(dt)
+        if constrainPlane { pos.z = 0 }
+
+        let dampAng = max(0, 1.0 - angDamp * dt)
+        angVel = angVel.scale(dampAng)
+        let angMag = angVel.length
+        if angMag > 0.001 {
+            let axis = angVel.scale(1.0 / angMag)
+            let dq = RaylibC.QuaternionFromAxisAngle(axis, angMag * dt)
+            orient = RaylibC.QuaternionMultiply(dq, orient)
+        }
+    }
+
     override public func handleDraw() {
-        if constrainPlane {
-            rigidbody!.position.z = 0
-        }
-        let pos: Vector3 = rigidbody!.position.vector3
-        var (axis, angle) = rigidbody!.orientation.vector4.toAxisAngle()
-        angle = angle.rad2deg
-        Raylib.drawModelEx(model!, pos, axis, angle, Vector3(scale), color)
-        if wireframe {
-            Raylib.drawModelWiresEx(model!, pos, axis, angle, Vector3(scale), wireframeColor)
-        }
+        let wa = pos + RaylibC.Vector3RotateByQuaternion(localA, orient)
+        let wb = pos + RaylibC.Vector3RotateByQuaternion(localB, orient)
+        let wc = pos + RaylibC.Vector3RotateByQuaternion(localC, orient)
+        DrawTriangle3D(wa, wb, wc, color)
+        DrawTriangle3D(wc, wb, wa, color)
     }
 }
